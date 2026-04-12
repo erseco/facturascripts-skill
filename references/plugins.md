@@ -95,7 +95,7 @@ hidden = false
 
 | Campo | Tipo | Requerido | Descripcion | Ejemplo |
 |-------|------|-----------|-------------|---------|
-| `name` | string | Si | Nombre unico del plugin. Debe coincidir con el nombre de la carpeta. Usar PascalCase. | `MiPlugin` |
+| `name` | string | Si | Nombre unico del plugin. Debe coincidir EXACTAMENTE con el nombre de la carpeta del plugin. Se acepta PascalCase, minusculas y guiones bajos. | `MiPlugin` o `mi_plugin` |
 | `description` | string | Si | Descripcion del plugin. Breve pero descriptiva. | `Plugin para personalizar clientes` |
 | `version` | float | Si | Numero de version del plugin. Se usa para detectar actualizaciones. | `1.0.0` o `1.5` |
 | `min_version` | float | Si | Version minima de FacturaScripts requerida. A partir de 2025 es obligatorio usar 2025 o superior. | `2025` |
@@ -107,7 +107,7 @@ hidden = false
 ### 2.3 Validaciones del facturascripts.ini
 
 - El campo `min_version` DEBE ser >= 2025. Plugins con min_version < 2025 se consideran incompatibles.
-- El campo `name` DEBE usar caracteres alfanumericos sin espacios (PascalCase recomendado).
+- El campo `name` DEBE coincidir EXACTAMENTE con el nombre del directorio del plugin. Se aceptan caracteres alfanumericos y guiones bajos (PascalCase recomendado, pero no obligatorio).
 - La version PHP DEBE ser compatible con el servidor donde se instale.
 - Los plugins en `require` DEBEN estar disponibles para ser activados.
 
@@ -131,14 +131,16 @@ hidden = false
 
 ### 3.1 Estructura Basica
 
-El archivo `Init.php` es la clase controladora del ciclo de vida del plugin:
+El archivo `Init.php` es la clase controladora del ciclo de vida del plugin.
+
+> **IMPORTANTE**: La clase base es `FacturaScripts\Core\Template\InitClass` (NO `Core\Base\InitClass`, que no existe en FS 2025).
 
 ```php
 <?php
 
 namespace FacturaScripts\Plugins\MiPlugin;
 
-use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Migrations;
 use FacturaScripts\Core\Tools;
 
@@ -1553,7 +1555,7 @@ hidden = false
 
 namespace FacturaScripts\Plugins\GestorServicios;
 
-use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Migrations;
 use FacturaScripts\Core\Tools;
 
