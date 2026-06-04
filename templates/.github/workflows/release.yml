@@ -1,0 +1,68 @@
+---
+# Release de un plugin de FacturaScripts: empaqueta el ZIP, crea la GitHub Release
+# y publica el build en la forja oficial (facturascripts.com/forja).
+#
+# Action de forja: https://github.com/erseco/action-facturascripts-publicar-forja
+#
+# IMPORTANTE — reemplaza PluginTemplate / plugintemplate por tu plugin:
+#   - --prefix=PluginTemplate/  -> carpeta raiz del ZIP (== name del .ini, sensible a mayusculas)
+#   - nombre del ZIP            -> PluginTemplate-<version>.zip
+#   - plugin-slug: plugintemplate -> slug del plugin en la forja (minusculas)
+#
+# La forja solo admite versiones enteras (7) o decimales simples (7.1).
+# Por eso los tags 1.0.1 o 1.0-beta NO disparan este workflow.
+#
+# Secrets necesarios en el repo:
+#   FS_FORJA_USER     -> email de facturascripts.com
+#   FS_FORJA_PASSWORD -> password de la forja
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+'
+      - '[0-9]+.[0-9]+'
+      - 'v[0-9]+'
+      - 'v[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Update version in facturascripts.ini
+        run: sed -i "s/^version.*/version = ${{ steps.version.outputs.VERSION }}/" facturascripts.ini
+
+      - name: Create ZIP using git archive
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add facturascripts.ini
+          git commit -m "Update version to ${{ steps.version.outputs.VERSION }}" || true
+          git archive --format=zip --prefix=PluginTemplate/ HEAD \
+            -o PluginTemplate-${{ steps.version.outputs.VERSION }}.zip
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: PluginTemplate-${{ steps.version.outputs.VERSION }}.zip
+          generate_release_notes: true
+
+      - name: Publish to FacturaScripts forja
+        uses: erseco/action-facturascripts-publicar-forja@v1
+        with:
+          plugin-slug: plugintemplate
+          zip-path: PluginTemplate-${{ steps.version.outputs.VERSION }}.zip
+          version: ${{ steps.version.outputs.VERSION }}
+          status: stable
+          forja-user: ${{ secrets.FS_FORJA_USER }}
+          forja-password: ${{ secrets.FS_FORJA_PASSWORD }}

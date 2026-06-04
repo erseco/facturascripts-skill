@@ -32,6 +32,7 @@ Antes de escribir codigo, lee la referencia relevante segun la tarea:
 | Usuarios, roles, permisos, seguridad | `references/security.md` (1840 lineas) |
 | Traducciones e internacionalizacion | `references/translations.md` (1181 lineas) |
 | Consulta rapida de metodos y clases | `references/quick-reference.md` (454 lineas) |
+| Montar entorno, probar plugins/PRs, automatizar releases | `references/dev-tooling.md` |
 
 Para la mayoria de tareas de desarrollo de plugins, lee `references/plugins.md` primero
 y luego las referencias especificas que necesites.
@@ -39,6 +40,30 @@ y luego las referencias especificas que necesites.
 Si la tarea involucra crear un MCP Server para conectar con FacturaScripts, lee
 `references/api.md` que incluye una seccion completa sobre como crear un MCP Server
 con herramientas basadas en la API REST.
+
+Si la tarea involucra **arrancar un proyecto de plugin**, **montar un entorno de
+desarrollo o pruebas**, **dar a un revisor una demo en vivo de un PR**, **probar un
+plugin definiendo un `blueprint.json`** o **automatizar el release/publicacion en la
+forja**, lee `references/dev-tooling.md`. Documenta el ecosistema de herramientas y
+hay archivos listos para copiar en `templates/` (workflows de CI/preview/release,
+`blueprint.json` y script de renombrado).
+
+## Entorno de desarrollo, pruebas y publicacion
+
+Ademas de la documentacion del core, este skill cubre el ecosistema de herramientas
+para el ciclo de vida completo de un plugin (detalle en `references/dev-tooling.md`):
+
+| Herramienta | Repositorio | Para que |
+|-------------|-------------|----------|
+| Imagen Docker base | [erseco/alpine-facturascripts](https://github.com/erseco/alpine-facturascripts) | Imagen ligera (Alpine + PHP 8.4) con instalacion desatendida; base del entorno dev y CI |
+| Plantilla de plugin | [erseco/facturascripts-plugin-template](https://github.com/erseco/facturascripts-plugin-template) | Esqueleto con Docker, tests, lint y workflows de CI/release |
+| Playground (WASM) | [erseco/facturascripts-playground](https://github.com/erseco/facturascripts-playground) | FacturaScripts en el navegador, configurable con `blueprint.json` |
+| Action PR Preview | [erseco/action-facturascripts-playground-pr-preview](https://github.com/erseco/action-facturascripts-playground-pr-preview) | Comentario en el PR con enlace para probar la rama en el Playground |
+| Action Publicar Forja | [erseco/action-facturascripts-publicar-forja](https://github.com/erseco/action-facturascripts-publicar-forja) | Sube el ZIP como build a la forja oficial tras una release |
+
+Flujo recomendado: crear repo desde la plantilla -> desarrollar en local con
+`make up` -> calidad con `make lint/test` (y CI) -> PR con preview automatico en el
+Playground -> tag numerico que dispara ZIP + GitHub Release + publicacion en la forja.
 
 ## Estructura de FacturaScripts 2025
 
