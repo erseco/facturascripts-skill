@@ -2,6 +2,8 @@
 name: facturascripts-reporting
 description: >
   Ayuda a generar informes reproducibles de FacturaScripts sobre facturas expedidas, facturas recibidas, cobros, pagos, diario contable, mayores, vencimientos y exportaciones. Usar cuando el usuario pida informes contables, de facturación o de tesorería a partir de datos de FacturaScripts.
+metadata:
+  version: "v0"
 ---
 
 # FacturaScripts Reporting
