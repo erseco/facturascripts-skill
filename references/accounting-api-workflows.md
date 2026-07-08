@@ -1,37 +1,38 @@
-# FacturaScripts accounting and API workflows
+# Flujos contables y de API para FacturaScripts
 
-Use this reference when the task is to operate FacturaScripts as an accounting user, accountant assistant or API automation agent: invoices, collections, payments, journal entries, ledgers, tax reports, issued invoices, received invoices and accounting exports.
+Usa esta referencia cuando la tarea consista en operar FacturaScripts como usuario contable, asistente de contabilidad o agente de automatización por API: facturas, cobros, pagos, asientos, mayores, diario, informes fiscales, facturas expedidas, facturas recibidas y exportaciones contables.
 
-This file is not tax or legal advice. It is an operational checklist for using FacturaScripts safely. For current IVA, IGIC, IRPF, SII, Verifactu or local rules, verify with authoritative sources and the user's accountant before filing or posting irreversible data.
+Este archivo no es asesoramiento fiscal ni legal. Es una guía operativa para usar FacturaScripts con seguridad. Para IVA, IGIC, IRPF, SII, VERI*FACTU o reglas locales vigentes, consulta `references/fuentes-oficiales-tributarias.md` y valida con la asesoría fiscal antes de presentar declaraciones o registrar operaciones irreversibles.
 
-## Core entities to inspect first
+## Entidades principales que conviene inspeccionar
 
-Before building queries or payloads, discover the real resources and fields in the target installation:
+Antes de construir consultas o payloads, descubre los recursos y campos reales de la instalación objetivo:
 
-1. `GET /api/3` to list resources.
-2. If installed, `GET /swagger?action=get-json` from the `DocumentacionAPI` plugin.
-3. If a resource schema endpoint is available, inspect it before writing.
-4. Check enabled plugins because accounting, reporting and tax behavior may change.
+1. `GET /api/3` para listar recursos.
+2. Si está instalado, `GET /swagger?action=get-json` desde el plugin `DocumentacionAPI`.
+3. Si existe un endpoint de esquema de recurso, consúltalo antes de escribir.
+4. Revisa plugins activos, porque la contabilidad, los informes y la fiscalidad pueden cambiar.
 
-Common model names to look for:
+Modelos habituales que pueden existir:
 
-- Sales: `FacturaCliente`, `FacturaClienteLinea`, `ReciboCliente`, `PagoCliente`, `Cliente`.
-- Purchases: `FacturaProveedor`, `FacturaProveedorLinea`, `ReciboProveedor`, `PagoProveedor`, `Proveedor`.
-- Accounting: `Ejercicio`, `Diario`, `Cuenta`, `Subcuenta`, `Asiento`, `Partida`, `CuentaEspecial`.
-- Taxes: `Impuesto`, `ImpuestoZona`, `Retencion`.
-- Company configuration: `Empresa`, `Serie`, `FormaPago`, `Divisa`.
+- Ventas: `FacturaCliente`, `FacturaClienteLinea`, `ReciboCliente`, `PagoCliente`, `Cliente`.
+- Compras: `FacturaProveedor`, `FacturaProveedorLinea`, `ReciboProveedor`, `PagoProveedor`, `Proveedor`.
+- Contabilidad: `Ejercicio`, `Diario`, `Cuenta`, `Subcuenta`, `Asiento`, `Partida`, `CuentaEspecial`.
+- Impuestos: `Impuesto`, `ImpuestoZona`, `Retencion`.
+- Configuración: `Empresa`, `Serie`, `FormaPago`, `Divisa`.
 
-Do not assume resource slugs. FacturaScripts usually exposes plural lower-case resources and custom endpoints, but the installed API is the source of truth.
+No asumas slugs de recursos. FacturaScripts suele exponer recursos en minúscula/plural y endpoints personalizados, pero la instalación concreta es la fuente de verdad.
 
-## Authentication baseline
+## Autenticación
 
-- API base path: `https://example.com/api/3`.
-- Use the API key in the `Token` header when available.
-- Use least-privilege API keys. Separate read-only reporting keys from write keys.
-- Never print or commit tokens.
-- Prefer HTTPS.
+- Ruta base: `https://example.com/api/3`.
+- Usa la API Key en la cabecera `Token` cuando esté disponible.
+- Usa claves de mínimo privilegio.
+- Separa claves de solo lectura para informes y claves de escritura para operaciones contables.
+- No imprimas ni subas tokens a repositorios, issues, PRs o logs.
+- Usa siempre HTTPS.
 
-Example read request:
+Ejemplo de lectura:
 
 ```bash
 curl -sS \
@@ -39,7 +40,7 @@ curl -sS \
   "$FACTURASCRIPTS_URL/api/3"
 ```
 
-Example form-encoded write request:
+Ejemplo de escritura con formulario codificado:
 
 ```bash
 curl -sS -X POST \
@@ -50,125 +51,126 @@ curl -sS -X POST \
   "$FACTURASCRIPTS_URL/api/3/crearFacturaCliente"
 ```
 
-## Query pattern for reports
+## Patrón de consulta para informes
 
-Use `limit`, `offset`, `filter[...]` and `sort[...]`.
+Usa `limit`, `offset`, `filter[...]` y `sort[...]`.
 
-Typical period filter pattern, after verifying the date field exists:
+Filtro típico por periodo, tras verificar que el campo de fecha existe:
 
 ```text
-GET /api/3/<resource>?filter[fecha_gte]=2026-01-01&filter[fecha_lte]=2026-03-31&sort[fecha]=ASC&limit=500&offset=0
+GET /api/3/<recurso>?filter[fecha_gte]=2026-01-01&filter[fecha_lte]=2026-03-31&sort[fecha]=ASC&limit=500&offset=0
 ```
 
-Known operator suffixes in the public API documentation include:
+Operadores habituales documentados:
 
-- Exact match: `filter[field]=value`
-- Greater than: `filter[field_gt]=value`
-- Greater or equal: `filter[field_gte]=value`
-- Less than: `filter[field_lt]=value`
-- Less or equal: `filter[field_lte]=value`
-- Not equal: `filter[field_neq]=value`
-- Contains: `filter[field_like]=value`
+- Coincidencia exacta: `filter[campo]=valor`
+- Mayor que: `filter[campo_gt]=valor`
+- Mayor o igual: `filter[campo_gte]=valor`
+- Menor que: `filter[campo_lt]=valor`
+- Menor o igual: `filter[campo_lte]=valor`
+- Distinto: `filter[campo_neq]=valor`
+- Contiene: `filter[campo_like]=valor`
 
-For large exports, paginate until fewer records than `limit` are returned, and capture `X-Total-Count` when the HTTP client exposes response headers.
+Para exportaciones grandes, pagina hasta recibir menos registros que `limit`. Si el cliente HTTP expone cabeceras, captura `X-Total-Count` cuando exista.
 
-## Creating invoices
+## Crear facturas
 
-When the custom endpoint exists, prefer it over manual model CRUD because it calculates totals and lines consistently.
+Cuando exista un endpoint específico de creación, prefiérelo frente al CRUD manual porque suele calcular líneas, totales e impuestos de forma coherente con FacturaScripts.
 
-Sales invoice:
+Factura de cliente:
 
 ```text
 POST /api/3/crearFacturaCliente
-codcliente=<customer-code-or-id>
-lineas=<json-lines>
+codcliente=<codigo-o-id-cliente>
+lineas=<json-lineas>
 ```
 
-Supplier invoice:
+Factura de proveedor:
 
 ```text
 POST /api/3/crearFacturaProveedor
-codproveedor=<supplier-code-or-id>
-lineas=<json-lines>
+codproveedor=<codigo-o-id-proveedor>
+lineas=<json-lineas>
 ```
 
-Line fields normally include either `referencia` or `descripcion`. Optional fields may include `cantidad`, `pvpunitario`, discounts, tax code and retention fields. Verify the current schema before writing.
+Las líneas suelen incluir `referencia` o `descripcion`. Otros campos posibles: `cantidad`, `pvpunitario`, descuentos, código de impuesto y retenciones. Verifica siempre el esquema real antes de escribir.
 
-Always return a dry-run table before creation:
+Antes de crear una factura, devuelve un dry-run:
 
-| Field | Value |
+| Campo | Valor |
 | --- | --- |
-| Customer/supplier | ... |
-| Date | ... |
-| Lines | ... |
-| Tax regime | IVA / IGIC / exempt / reverse charge / unknown |
-| Net total | ... |
-| Tax total | ... |
-| Gross total | ... |
-| Payment status | paid / unpaid / unknown |
+| Cliente/proveedor | ... |
+| Fecha | ... |
+| Líneas | ... |
+| Régimen fiscal | IVA / IGIC / exenta / inversión sujeto pasivo / desconocido |
+| Base | ... |
+| Cuota | ... |
+| Retención | ... |
+| Total | ... |
+| Estado | cobrada/pagada / pendiente / desconocido |
 
-After creation, read the returned `doc` and `lines` object because FacturaScripts may assign final numbers, codes and calculated totals.
+Tras crear, lee el objeto devuelto (`doc`, `lines` o equivalente), porque FacturaScripts puede asignar número final, código y totales recalculados.
 
-## Marking invoices as paid or unpaid
+## Marcar facturas como cobradas o pagadas
 
-When available, use:
+Cuando estén disponibles, usa:
 
 ```text
 POST /api/3/pagarFacturaCliente/{id}
 POST /api/3/pagarFacturaProveedor/{id}
 ```
 
-Typical form fields:
+Campos habituales:
 
 ```text
 fechapago=YYYY-MM-DD
-codpago=<payment-method-code>
+codpago=<codigo-forma-pago>
 pagada=1
 ```
 
-Before calling payment endpoints:
+Antes de llamar al endpoint:
 
-1. Read the invoice and its receipts.
-2. Check pending amount, currency and due dates.
-3. Confirm payment method exists in `FormaPago`.
-4. Confirm the payment date belongs to an open accounting period.
-5. Produce a dry-run summary.
+1. Lee la factura y sus recibos.
+2. Comprueba importe pendiente, divisa y vencimientos.
+3. Confirma que la forma de pago existe en `FormaPago`.
+4. Confirma que la fecha de pago pertenece a un ejercicio abierto.
+5. Devuelve un dry-run.
 
-## Creating accounting entries
+## Crear asientos contables
 
-Treat direct journal-entry creation as high risk. Prefer existing FacturaScripts business operations when they generate entries automatically. Only create `Asiento`/`Partida` directly when the user explicitly asks for a manual journal entry and provides enough accounting data.
+La creación directa de asientos es una operación de alto riesgo. Prioriza operaciones de negocio de FacturaScripts que generen contabilidad automáticamente. Solo crea `Asiento`/`Partida` directamente cuando el usuario lo pida de forma explícita y aporte datos contables suficientes.
 
-Minimum validation:
+Validación mínima:
 
-- Accounting date belongs to an open `Ejercicio`.
-- `Diario` exists.
-- Every `Subcuenta` exists and is active for the exercise.
-- Debit equals credit, with currency and rounding rules applied.
-- Tax-related entries reconcile with invoice tax bases and tax quotas.
-- Supporting document or concept is linked when possible.
-- User confirms the final entry.
+- La fecha pertenece a un `Ejercicio` abierto.
+- El `Diario` existe.
+- Todas las `Subcuenta` existen y pertenecen al ejercicio adecuado.
+- Debe y haber cuadran tras aplicar redondeos.
+- Las partidas con impuestos concilian con bases y cuotas de la factura relacionada.
+- Existe concepto, documento soporte o tercero cuando sea aplicable.
+- El usuario confirma el asiento final.
 
-Dry-run format:
+Formato de dry-run:
 
-| Date | Account | Description | Debit | Credit | Third party | Tax | Document |
+| Fecha | Subcuenta | Concepto | Debe | Haber | Tercero | Impuesto | Documento |
 | --- | --- | --- | ---: | ---: | --- | --- | --- |
 | ... | ... | ... | ... | ... | ... | ... | ... |
-| **Total** | | | **0.00** | **0.00** | | | |
+| **Total** | | | **0,00** | **0,00** | | | |
 
-Never balance an entry by inventing a suspense account unless the user explicitly instructs it and confirms.
+No cuadricules un asiento inventando una cuenta puente o de suspense salvo instrucción explícita y confirmación.
 
 ## Diario contable
 
-For a journal report:
+Para generar un diario:
 
-1. Identify period: start date, end date and exercise.
-2. Query entries (`Asiento`) by date and optionally journal.
-3. Query lines (`Partida`) for the returned entry IDs.
-4. Join with `Subcuenta` descriptions.
-5. Sort by date, entry number and line order.
-6. Validate each entry balances.
+1. Identifica periodo, ejercicio y diario opcional.
+2. Consulta `Asiento` por fecha.
+3. Consulta `Partida` para los asientos devueltos.
+4. Une con `Subcuenta` para descripciones.
+5. Ordena por fecha, número de asiento y orden de línea.
+6. Valida que cada asiento cuadra.
 
-Recommended output columns:
+Columnas recomendadas:
 
 ```text
 fecha, asiento, diario, subcuenta, descripcion_subcuenta, concepto, debe, haber, documento, tercero, punteada
@@ -176,89 +178,90 @@ fecha, asiento, diario, subcuenta, descripcion_subcuenta, concepto, debe, haber,
 
 ## Mayor contable
 
-For a ledger report:
+Para generar un mayor:
 
-1. Require or infer an account/subaccount range.
-2. Query `Partida` filtered by subaccount and period.
-3. Join the parent `Asiento` for date and journal.
-4. Calculate opening balance from prior lines if requested.
-5. Calculate running balance with the correct sign convention for the account class.
-6. Include totals debit, credit and final balance.
+1. Exige o infiere una subcuenta o rango de subcuentas.
+2. Define periodo.
+3. Consulta `Partida` filtrando por subcuenta y periodo.
+4. Une con `Asiento` para fecha y diario.
+5. Calcula saldo inicial si se solicita.
+6. Calcula saldo acumulado con el signo adecuado.
+7. Incluye totales de debe, haber y saldo final.
 
-Recommended output columns:
+Columnas recomendadas:
 
 ```text
 fecha, asiento, diario, concepto, debe, haber, saldo, documento, tercero
 ```
 
-## Issued invoice report
+## Informe de facturas expedidas
 
-For facturas expedidas:
+Para facturas expedidas:
 
-1. Query `FacturaCliente` for the period.
-2. Include rectifying invoices separately when identifiable.
-3. Join customer fiscal name and NIF when available.
-4. Include tax bases by tax code/rate if lines or tax breakdowns are available.
-5. Split paid, pending and overdue totals when receipts are available.
+1. Consulta `FacturaCliente` en el periodo.
+2. Separa facturas rectificativas si el modelo permite identificarlas.
+3. Une cliente, nombre fiscal y NIF si están disponibles.
+4. Incluye bases por impuesto si las líneas o desgloses lo permiten.
+5. Separa cobrado, pendiente y vencido cuando existan recibos.
 
-Recommended output columns:
+Columnas recomendadas:
 
 ```text
-fecha, codigo, numero, serie, cliente, nif, base, impuesto, cuota, retencion, total, pagada, vencimiento, forma_pago
+fecha, codigo, numero, serie, cliente, nif, base, impuesto, cuota, retencion, total, cobrada, vencimiento, forma_pago
 ```
 
-## Received invoice report
+## Informe de facturas recibidas
 
-For facturas recibidas:
+Para facturas recibidas:
 
-1. Query `FacturaProveedor` for the period.
-2. Include supplier invoice number and reception/accounting date if available.
-3. Join supplier fiscal name and NIF.
-4. Include deductible tax quota only when the data supports it.
-5. Separate rectifying invoices and reverse-charge cases.
+1. Consulta `FacturaProveedor` en el periodo.
+2. Incluye número de proveedor y fecha contable/recepción si existen.
+3. Une proveedor, nombre fiscal y NIF.
+4. Incluye cuota deducible solo cuando los datos lo permitan.
+5. Separa facturas rectificativas e inversión del sujeto pasivo cuando se detecten.
 
-Recommended output columns:
+Columnas recomendadas:
 
 ```text
 fecha, numproveedor, codigo, proveedor, nif, base, impuesto, cuota, cuota_deducible, retencion, total, pagada, vencimiento, forma_pago
 ```
 
-## IVA and IGIC checks
+## Comprobaciones de IVA e IGIC
 
-When the user mentions IVA or IGIC:
+Cuando el usuario mencione IVA o IGIC:
 
-- Determine territory: mainland/Balearic IVA, Canary IGIC, Ceuta/Melilla IPSI, intra-EU, export, import or non-taxable.
-- Determine role: supplier, customer, issuer, recipient, reseller, professional, public administration, intra-community operator.
-- Determine tax status: subject, exempt, non-subject, reverse charge, zero rate, reduced rate, recargo, retention.
-- Do not hardcode current rates unless recently verified.
-- Keep tax code handling separate from account-code handling.
-- For Canary operations, do not treat IGIC as IVA with a different rate; validate reports and models separately.
+- Determina territorio: Península/Baleares con IVA, Canarias con IGIC, Ceuta/Melilla con IPSI, UE, exportación, importación o no sujeta.
+- Determina rol: emisor, receptor, cliente, proveedor, revendedor, profesional, administración pública u operador intracomunitario.
+- Determina estado fiscal: sujeta, exenta, no sujeta, inversión del sujeto pasivo, tipo cero, tipo reducido, recargo o retención.
+- No fijes tipos vigentes sin verificarlos en fuentes oficiales.
+- Mantén separada la lógica de códigos de impuesto y la lógica de subcuentas contables.
+- En operaciones canarias, no trates el IGIC como si fuera IVA con otro porcentaje.
 
-## Safe answer pattern for user-facing operations
+## Patrón seguro de respuesta
 
-When the user asks to perform an accounting/API task, respond in this order:
+Cuando el usuario pida ejecutar una tarea contable/API, responde en este orden:
 
-1. Restate the operation and period.
-2. State what will be read and what will be written.
-3. Show the exact filters or payload fields.
-4. Show dry-run results.
-5. Ask for confirmation for writes, unless the instruction already clearly authorizes execution.
-6. Execute, then read back and reconcile.
-7. Return a concise report with IDs, totals, warnings and next checks.
+1. Repite operación y periodo.
+2. Indica qué se leerá y qué se escribirá.
+3. Muestra filtros o campos del payload.
+4. Muestra resultados del dry-run.
+5. Pide confirmación para escrituras, salvo autorización inequívoca previa.
+6. Ejecuta, lee de vuelta y reconcilia.
+7. Devuelve informe con IDs, totales, advertencias y siguientes comprobaciones.
 
-## Error handling
+## Gestión de errores
 
-- `400`: missing mandatory field or malformed payload.
-- `401/403`: token missing, invalid or lacking permissions.
-- `404`: resource, document, customer, supplier or warehouse not found.
-- `409/422`: model validation, blocked period, failed recalculation or business rule error.
+- `400`: campo obligatorio ausente o payload mal formado.
+- `401/403`: token ausente, inválido o sin permisos.
+- `404`: recurso, documento, cliente, proveedor o almacén no encontrado.
+- `409/422`: error de validación del modelo, periodo bloqueado, recálculo fallido o regla de negocio incumplida.
 
-Return the raw API message when useful, but translate it into an operational next step.
+Devuelve el mensaje bruto de la API cuando ayude, pero tradúcelo a un siguiente paso operativo.
 
-## Security and audit trail
+## Seguridad y trazabilidad
 
-- Log every write with timestamp, endpoint, target ID, dry-run hash or summary and actor.
-- Prefer idempotent imports using external references where available.
-- For bulk operations, create a CSV/JSON preview and process in batches.
-- Stop on the first unreconciled accounting difference.
-- Store generated reports separately from API credentials.
+- Registra cada escritura con fecha/hora, endpoint, ID objetivo, resumen del dry-run y actor.
+- Para importaciones masivas, usa referencias externas idempotentes cuando existan.
+- Para lotes, crea una vista previa CSV/JSON y procesa por bloques.
+- Detén el proceso ante la primera diferencia contable no conciliada.
+- Guarda informes generados separados de credenciales API.
