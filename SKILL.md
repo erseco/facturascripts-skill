@@ -1,72 +1,73 @@
 ---
 name: facturascripts
 description: >
-  Coordinates FacturaScripts expertise for plugin development, REST API usage, accounting workflows, IVA/IGIC reasoning,
-  invoices, payments, collections, journal entries, ledgers, reports, and MCP/API integrations. Use when the user mentions
-  FacturaScripts, FacturaScripts plugins, FacturaScripts API, accounting entries, FacturaCliente, FacturaProveedor,
-  ReciboCliente, ReciboProveedor, Asiento, Partida, Subcuenta, diario, mayor, IVA, IGIC, facturas expedidas or facturas recibidas.
+  Coordina conocimiento experto de FacturaScripts para desarrollo de plugins, uso de la API REST, contabilidad, IVA/IGIC,
+  facturas, cobros, pagos, asientos, mayores, diario, informes e integraciones MCP/API. Usar cuando el usuario mencione
+  FacturaScripts, plugins, API, FacturaCliente, FacturaProveedor, ReciboCliente, ReciboProveedor, Asiento, Partida,
+  Subcuenta, diario, mayor, IVA, IGIC, facturas expedidas o facturas recibidas.
 ---
 
-# FacturaScripts Skill Router
+# Router de Skills de FacturaScripts
 
-This root skill is a compatibility entry point for the original single-skill layout. New work should prefer the specialized skills proposed in `PROMPT_GENERADOR_SKILLS.md` and the workflows in `references/accounting-api-workflows.md`.
+Este skill raíz funciona como punto de entrada compatible con el diseño original de un único skill. Para trabajo nuevo, usa la colección especializada propuesta en `PROMPT_GENERADOR_SKILLS.md` y los flujos de `references/accounting-api-workflows.md`.
 
-The repository is an evolution of the original FacturaScripts skill by Jose Conti. Keep that attribution visible in documentation and derivative files.
+Este repositorio es una evolución del skill original de FacturaScripts creado por Jose Conti. Mantén esa atribución visible en la documentación y en los archivos derivados.
 
-## Skill selection
+## Selección del skill o referencia
 
-Use the smallest relevant scope before loading long references:
+Carga siempre el alcance más pequeño que resuelva la tarea antes de abrir referencias largas:
 
-| User task | Read first |
+| Tarea del usuario | Leer primero |
 | --- | --- |
-| Build or refactor FacturaScripts plugins | `references/plugins.md`, then `references/controllers.md`, `references/models.md`, `references/views-widgets.md` |
-| Create API clients, MCP tools or external integrations | `references/api.md`, then `references/accounting-api-workflows.md` |
-| Work as an accounting user through the API | `references/accounting-api-workflows.md`, then `references/models.md` for entity names |
-| Upload invoices, collect payments or mark supplier payments | `references/accounting-api-workflows.md`, `references/api.md` |
-| Generate issued/received invoice reports | `references/accounting-api-workflows.md`, then API resource discovery or Swagger JSON |
-| Consult journal, ledger, accounts and entries | `references/accounting-api-workflows.md`, `references/libraries.md`, `references/models.md` |
-| Reason about IVA, IGIC, retentions or reverse-charge cases | `references/accounting-api-workflows.md`; verify current tax rules with authoritative sources when needed |
-| Security, roles or API key permissions | `references/security.md`, `references/api.md` |
-| Development tooling, CI, previews and releases | `references/dev-tooling.md` |
+| Crear o refactorizar plugins de FacturaScripts | `references/plugins.md`, después `references/controllers.md`, `references/models.md`, `references/views-widgets.md` |
+| Crear clientes API, herramientas MCP o integraciones externas | `references/api.md`, después `references/accounting-api-workflows.md` |
+| Operar FacturaScripts como usuario contable mediante API | `references/accounting-api-workflows.md`, después `references/models.md` para nombres de entidades |
+| Subir facturas, registrar cobros o marcar pagos | `references/accounting-api-workflows.md`, `references/api.md` |
+| Generar informes de facturas expedidas o recibidas | `references/accounting-api-workflows.md`, después descubrir recursos API o Swagger JSON |
+| Consultar diario, mayor, cuentas y asientos | `references/accounting-api-workflows.md`, `references/libraries.md`, `references/models.md` |
+| Razonar sobre IVA, IGIC, retenciones o inversión del sujeto pasivo | `references/accounting-api-workflows.md` y `references/fuentes-oficiales-tributarias.md` |
+| Seguridad, roles o permisos de API Key | `references/security.md`, `references/api.md` |
+| Entorno, pruebas, CI, previews y releases | `references/dev-tooling.md` |
 
-## Operating principles
+## Principios de funcionamiento
 
-1. Do not assume the user's FacturaScripts instance has every endpoint enabled. Discover resources at `/api/3` or through the `DocumentacionAPI` Swagger JSON when possible.
-2. Treat accounting writes as high-risk operations. For creates, updates, payments and journal entries, produce a dry-run summary and ask for explicit confirmation unless the user already requested execution in an unambiguous way.
-3. Never invent account codes, tax rates, fiscal periods, customer IDs, supplier IDs or payment methods. Query the instance or ask the user.
-4. For IVA and IGIC, separate factual accounting mechanics from tax/legal advice. Validate rates, exemptions, reverse-charge treatment, recargo de equivalencia and Canary-specific IGIC rules against current authoritative sources.
-5. For reports, state the data source, filters, period, currency, tax regime and whether totals are pre-tax, tax, withholding, paid, pending or gross.
-6. For API calls, prefer form URL encoded payloads for FacturaScripts create/update operations unless the endpoint documentation or Swagger schema says otherwise.
-7. For model CRUD, verify field names from the model schema before composing filters or payloads.
-8. For code, follow the style already used by FacturaScripts and the target plugin. Do not modify core files; use plugins, extensions, controllers, models, XMLView, workers and API endpoints.
+1. No asumas que la instalación de FacturaScripts tiene todos los endpoints activos. Descubre recursos en `/api/3` o mediante el Swagger JSON del plugin `DocumentacionAPI` cuando exista.
+2. Trata las escrituras contables como operaciones de alto riesgo. Antes de crear, actualizar, cobrar, pagar o subir asientos, prepara un dry-run salvo que el usuario haya autorizado la ejecución de forma explícita e inequívoca.
+3. No inventes códigos de cuenta, tipos fiscales, ejercicios, clientes, proveedores, series, almacenes, formas de pago ni impuestos. Consulta la instalación o pide el dato.
+4. Para IVA e IGIC, separa mecánica contable de asesoramiento fiscal. Valida tipos, exenciones, inversión del sujeto pasivo, recargos y reglas canarias con fuentes oficiales actualizadas.
+5. En informes, indica origen de datos, filtros, periodo, divisa, régimen fiscal y si los importes son base, cuota, retención, cobrado/pagado, pendiente o total.
+6. Para llamadas API de creación/actualización, prefiere payload `application/x-www-form-urlencoded` salvo que el endpoint o Swagger indique otra cosa.
+7. Para CRUD de modelos, verifica nombres de campos antes de componer filtros o payloads.
+8. Para código, sigue el estilo de FacturaScripts y del plugin objetivo. No modifiques el core: usa plugins, extensiones, controladores, modelos, XMLView, workers y endpoints API.
 
-## FacturaScripts API baseline
+## Base de API de FacturaScripts
 
-- Base API path: `/api/3`.
-- Authentication: API key in the `Token` header, or the authentication mode documented by the target instance.
-- Common query controls: `limit`, `offset`, `filter[field]`, operator suffixes such as `_gt`, `_gte`, `_lt`, `_lte`, `_neq`, `_like`, and `sort[field]=ASC|DESC`.
-- Common document endpoints include `crearFacturaCliente`, `crearFacturaProveedor`, `pagarFacturaCliente/{id}` and `pagarFacturaProveedor/{id}` when available.
-- Export endpoints can provide PDF/XLS/CSV for supported documents, for example `exportarFacturaCliente/{id}?type=CSV` when enabled.
+- Ruta base: `/api/3`.
+- Autenticación habitual: API Key en la cabecera `Token`, o el modo documentado por la instalación.
+- Controles habituales de consulta: `limit`, `offset`, `filter[campo]`, operadores como `_gt`, `_gte`, `_lt`, `_lte`, `_neq`, `_like` y `sort[campo]=ASC|DESC`.
+- Endpoints frecuentes, si están disponibles: `crearFacturaCliente`, `crearFacturaProveedor`, `pagarFacturaCliente/{id}` y `pagarFacturaProveedor/{id}`.
+- Algunos endpoints de exportación pueden devolver PDF/XLS/CSV, por ejemplo `exportarFacturaCliente/{id}?type=CSV` si está habilitado.
 
-## Recommended specialized collection
+## Colección especializada recomendada
 
-The target collection should be generated or maintained as separate folders, each with its own `SKILL.md` and narrowly scoped description:
+La colección final debe mantenerse como carpetas separadas, cada una con su propio `SKILL.md` y una descripción precisa:
 
-1. `facturascripts-developer`: plugin, API, MCP, CI and release development.
-2. `facturascripts-api-user`: safe operational usage of the REST API as a user.
-3. `facturascripts-accounting-user`: accounting workflows: invoices, entries, payments, collections, reports, ledgers and journal.
-4. `facturascripts-tax-iva-igic`: Spanish IVA and Canary IGIC reasoning for data validation and report interpretation.
-5. `facturascripts-reporting`: recurring reports for issued/received invoices, ageing, outstanding payments, ledger and journal exports.
+1. `facturascripts-developer`: desarrollo de plugins, API, MCP, CI y releases.
+2. `facturascripts-api-user`: uso operativo seguro de la API REST.
+3. `facturascripts-accounting-user`: facturas, asientos, cobros, pagos, diario, mayores e informes.
+4. `facturascripts-tax-iva-igic`: validación de IVA, IGIC, retenciones y casuística fiscal española/canaria.
+5. `facturascripts-reporting`: informes de facturas expedidas, recibidas, vencimientos, diario y mayor.
 
-Use `PROMPT_GENERADOR_SKILLS.md` to generate the full multi-agent version of this collection.
+Usa `PROMPT_GENERADOR_SKILLS.md` para generar o ampliar la colección completa.
 
-## Verification checklist
+## Checklist de verificación
 
-Before returning a final answer or committing generated files:
+Antes de devolver una respuesta final o confirmar cambios:
 
-- The relevant skill description includes what it does and when it should be used.
-- `SKILL.md` stays concise and points to reference files instead of embedding everything.
-- Examples are concrete and executable.
-- Accounting operations include dry-run, validation and rollback/undo notes where feasible.
-- Installation and usage instructions are present in `README.md`.
-- Jose Conti attribution is preserved.
+- La descripción del skill indica qué hace y cuándo debe usarse.
+- `SKILL.md` se mantiene breve y delega en referencias.
+- Los ejemplos son concretos y ejecutables.
+- Las operaciones contables incluyen dry-run, validación y notas de reversión cuando sea posible.
+- El README incluye instalación y uso.
+- La atribución a Jose Conti se conserva.
+- Las fuentes tributarias oficiales están enlazadas en `references/fuentes-oficiales-tributarias.md`.
