@@ -1,33 +1,33 @@
 ---
 name: facturascripts-tax-iva-igic
 description: >
-  Helps validate IVA, IGIC, retentions, exemptions, reverse charge, issued invoices and received invoices in FacturaScripts without replacing tax advice. Use when the user asks about Spanish VAT, Canary IGIC, tax breakdowns or fiscal validation inside FacturaScripts.
+  Ayuda a validar IVA, IGIC, retenciones, exenciones, inversión del sujeto pasivo, facturas expedidas y facturas recibidas en FacturaScripts sin sustituir asesoramiento fiscal. Usar cuando el usuario pregunte por IVA español, IGIC canario, desglose de impuestos o validación fiscal dentro de FacturaScripts.
 ---
 
 # FacturaScripts Tax IVA/IGIC
 
-Use this skill to reason about tax data in FacturaScripts. It does not replace professional tax advice.
+Usa este skill para razonar sobre datos fiscales en FacturaScripts. No sustituye a una asesoría fiscal.
 
-## Read first
+## Leer primero
 
-| Task | Reference |
+| Tarea | Referencia |
 | --- | --- |
-| Tax checks in workflows | `../../references/accounting-api-workflows.md` |
-| Tax and invoice models | `../../references/models.md` |
-| Invoice reports | `../../references/accounting-api-workflows.md` |
+| Comprobaciones fiscales en flujos contables | `../../references/accounting-api-workflows.md` |
+| Modelos de impuestos y facturas | `../../references/models.md` |
+| Fuentes oficiales | `../../references/fuentes-oficiales-tributarias.md` |
 
-## Rules
+## Reglas
 
-- Do not hardcode current tax rates unless they were verified against an authoritative source and the verification date is stated.
-- Ask for territory when missing: mainland/Balearic IVA, Canary IGIC, Ceuta/Melilla, EU or non-EU.
-- Do not treat IGIC as IVA with a different percentage.
-- Distinguish subject, exempt, non-subject, reverse-charge, retention and deductible quota.
-- Separate accounting mechanics from tax/legal advice.
-- For filings or legally sensitive decisions, require accountant review.
+- No fijes tipos fiscales vigentes sin verificarlos contra una fuente oficial e indicar la fecha de comprobación.
+- Pregunta por territorio cuando falte: Península/Baleares, Canarias, Ceuta/Melilla, UE o terceros países.
+- No trates el IGIC como “IVA con otro porcentaje”.
+- Distingue operación sujeta, exenta, no sujeta, inversión del sujeto pasivo, retención y cuota deducible.
+- Separa mecánica contable de asesoramiento fiscal.
+- Para declaraciones, libros oficiales o decisiones fiscalmente sensibles, exige revisión por asesoría fiscal.
 
-## Useful prompts
+## Prompts útiles
 
-- Check whether this invoice looks like IVA or IGIC and what data is missing.
-- Validate tax breakdowns for issued invoices in Q1.
-- Review received invoices and separate tax quota from deductible quota when data exists.
-- Flag possible reverse-charge cases without making final tax determinations.
+- Comprueba si esta factura parece de IVA o IGIC y qué datos faltan.
+- Valida los desgloses fiscales de facturas expedidas del primer trimestre.
+- Revisa facturas recibidas y separa cuota soportada de cuota deducible si los datos lo permiten.
+- Marca posibles casos de inversión del sujeto pasivo sin hacer una conclusión fiscal definitiva.
