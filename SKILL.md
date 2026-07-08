@@ -1,5 +1,5 @@
 ---
-name: facturascripts
+name: facturascripts-skill
 description: >
   Coordina conocimiento experto de FacturaScripts para desarrollo de plugins, uso de la API REST, contabilidad, IVA/IGIC,
   facturas, cobros, pagos, asientos, mayores, diario, informes e integraciones MCP/API. Usar cuando el usuario mencione
