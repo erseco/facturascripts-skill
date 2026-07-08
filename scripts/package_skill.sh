@@ -6,7 +6,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST_DIR="${ROOT_DIR}/dist"
 STAGE_DIR="$(mktemp -d)"
 PACKAGE_DIR="${STAGE_DIR}/facturascripts-skill"
-PACKAGE_NAME="facturascripts-skill-${VERSION}.zip"
+VERSIONED_PACKAGE_NAME="facturascripts-skill-${VERSION}.zip"
+LATEST_PACKAGE_NAME="facturascripts-skill.zip"
 
 cleanup() {
   rm -rf "${STAGE_DIR}"
@@ -74,7 +75,7 @@ PY
 
 (
   cd "${STAGE_DIR}"
-  zip -r "${DIST_DIR}/${PACKAGE_NAME}" "facturascripts-skill" \
+  zip -r "${DIST_DIR}/${VERSIONED_PACKAGE_NAME}" "facturascripts-skill" \
     -x '*/.DS_Store' \
     -x '*/.git/*' \
     -x '*/.github/*' \
@@ -85,8 +86,13 @@ PY
     -x '*/__pycache__/*'
 )
 
-sha256sum "${DIST_DIR}/${PACKAGE_NAME}" > "${DIST_DIR}/${PACKAGE_NAME}.sha256"
+cp "${DIST_DIR}/${VERSIONED_PACKAGE_NAME}" "${DIST_DIR}/${LATEST_PACKAGE_NAME}"
 
-printf 'Generated package:\n  %s\n  %s\n' \
-  "${DIST_DIR}/${PACKAGE_NAME}" \
-  "${DIST_DIR}/${PACKAGE_NAME}.sha256"
+sha256sum "${DIST_DIR}/${VERSIONED_PACKAGE_NAME}" > "${DIST_DIR}/${VERSIONED_PACKAGE_NAME}.sha256"
+sha256sum "${DIST_DIR}/${LATEST_PACKAGE_NAME}" > "${DIST_DIR}/${LATEST_PACKAGE_NAME}.sha256"
+
+printf 'Generated packages:\n  %s\n  %s\n  %s\n  %s\n' \
+  "${DIST_DIR}/${VERSIONED_PACKAGE_NAME}" \
+  "${DIST_DIR}/${VERSIONED_PACKAGE_NAME}.sha256" \
+  "${DIST_DIR}/${LATEST_PACKAGE_NAME}" \
+  "${DIST_DIR}/${LATEST_PACKAGE_NAME}.sha256"
