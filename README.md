@@ -1,16 +1,26 @@
-# FacturaScripts Skills Collection
+# Colección de Skills para FacturaScripts
 
-Colección de skills para trabajar con FacturaScripts desde dos perspectivas complementarias:
+Colección de skills en español para trabajar con FacturaScripts desde dos perspectivas complementarias:
 
 - **Desarrollo**: plugins, modelos, controladores, XMLView, API REST, MCP, pruebas, CI y publicación.
 - **Uso contable y operativo**: facturación, cobros, pagos, asientos, diario, mayores, informes de facturas expedidas y recibidas, IVA e IGIC.
 
-Este repositorio es una **evolución del skill original de Jose Conti** para FacturaScripts, publicado originalmente en `joseconti/facturascripts-skill`, y mantiene esa atribución como base del trabajo. La rama actual reorganiza el material para poder evolucionar desde un único skill generalista hacia una colección de skills especializados con carga progresiva.
+Este repositorio es una **evolución del skill original de Jose Conti** para FacturaScripts, publicado originalmente en `joseconti/facturascripts-skill`, y mantiene esa atribución como base del trabajo. La rama actual reorganiza el material para evolucionar desde un único skill generalista hacia una colección de skills especializados con carga progresiva.
+
+## Idioma y público objetivo
+
+El público principal es hispanohablante y, en especial, usuarios y desarrolladores que trabajan con contabilidad española, IVA e IGIC. Por eso:
+
+- La documentación operativa debe estar en español.
+- Los nombres técnicos se mantienen cuando son nombres reales de FacturaScripts, rutas, clases, endpoints o archivos: `SKILL.md`, `XMLView`, `FacturaCliente`, `/api/3`, `Token`.
+- Los ejemplos de uso deben estar en español.
+- El código, cuando se genere para plugins, puede mantenerse en inglés si el proyecto lo requiere, pero la explicación al usuario debe estar en español.
 
 ## Qué cambia en esta evolución
 
 - El `SKILL.md` raíz pasa a funcionar como **router de compatibilidad**.
 - Se añade una referencia específica para **flujos contables y API**: `references/accounting-api-workflows.md`.
+- Se añade una referencia de **fuentes oficiales tributarias**: `references/fuentes-oficiales-tributarias.md`.
 - Se añade un prompt maestro en español para que una IA multiagente genere una colección completa de skills: `PROMPT_GENERADOR_SKILLS.md`.
 - Se documentan instrucciones de instalación y uso.
 - Se separan claramente los usos de desarrollador y de usuario contable.
@@ -51,6 +61,7 @@ facturascripts-skill/
   SKILL.md
   README.md
   references/
+  skills/
   PROMPT_GENERADOR_SKILLS.md
 ```
 
@@ -67,7 +78,7 @@ Cuando la colección multi-skill esté generada, instala cada carpeta de `skills
 Crea un ZIP con la carpeta del skill:
 
 ```bash
-zip -r facturascripts-skill.zip SKILL.md README.md references PROMPT_GENERADOR_SKILLS.md
+zip -r facturascripts-skill.zip SKILL.md README.md references skills PROMPT_GENERADOR_SKILLS.md
 ```
 
 Después súbelo desde la configuración de Skills de Claude.ai. Si generas la colección multi-skill, crea un ZIP por cada carpeta de `skills/` o empaqueta solo el skill que quieras usar.
@@ -101,8 +112,6 @@ curl -sS \
 
 ### Como desarrollador
 
-Ejemplos de peticiones:
-
 ```text
 Usa el skill de FacturaScripts para crear un plugin llamado AccountingReports que añada un ReportController con filtro por ejercicio, proveedor y rango de fechas.
 ```
@@ -116,8 +125,6 @@ Diseña un MCP Server para consultar facturas expedidas, facturas recibidas, may
 ```
 
 ### Como usuario contable vía API
-
-Ejemplos de peticiones:
 
 ```text
 Consulta las facturas expedidas entre el 1 de enero y el 31 de marzo de 2026, agrupa por cliente y separa base, impuesto, retención, total, cobrado y pendiente.
@@ -135,6 +142,22 @@ Obtén el mayor de la subcuenta 4300001 para 2026 con saldo inicial, movimientos
 Marca como pagada esta factura de proveedor con fecha de pago 2026-02-15 y forma de pago transferencia, pero primero valida que la factura exista, que el ejercicio esté abierto y que la forma de pago sea válida.
 ```
 
+## Fuentes oficiales tributarias enlazadas
+
+Los skills no deben inventar tipos fiscales, plazos ni obligaciones formales. Para operaciones con IVA, IGIC, SII, libros registro o VERI*FACTU, consulta `references/fuentes-oficiales-tributarias.md`, que enlaza, entre otras fuentes:
+
+- Portal de IVA de la AEAT: https://sede.agenciatributaria.gob.es/Sede/iva.html
+- Facturación y Registro de la AEAT: https://sede.agenciatributaria.gob.es/Sede/iva/facturacion-registro.html
+- SII de IVA de la AEAT: https://sede.agenciatributaria.gob.es/Sede/iva/suministro-inmediato-informacion.html
+- Manual práctico IVA 2025 de la AEAT: https://sede.agenciatributaria.gob.es/Sede/ayuda/25manual/IVA.html
+- VERI*FACTU y SIF de la AEAT: https://sede.agenciatributaria.gob.es/Sede/iva/sistemas-informaticos-facturacion-verifactu.html
+- Agencia Tributaria Canaria: https://www3.gobiernodecanarias.org/tributos/atc/
+- Sede electrónica de la Agencia Tributaria Canaria: https://sede.gobiernodecanarias.org/tributos/
+- SII del IGIC: https://www3.gobiernodecanarias.org/tributos/atc/web/agencia-tributaria-canaria/w/suministro-inmediato-de-informacion-del-igic-sii-1?ida=170056&prnt=948
+- Ley 37/1992 del IVA: https://www.boe.es/buscar/act.php?id=BOE-A-1992-28740
+- Ley 20/1991 del REF de Canarias e IGIC: https://www.boe.es/buscar/act.php?id=BOE-A-1991-14463
+- Reglamento de facturación: https://www.boe.es/buscar/act.php?id=BOE-A-2012-14696
+
 ## Principios de seguridad contable
 
 - Toda operación de escritura debe tener **dry-run** previo.
@@ -151,6 +174,7 @@ Marca como pagada esta factura de proveedor con fecha de pago 2026-02-15 y forma
 | `SKILL.md` | Router raíz para activar la experiencia FacturaScripts. |
 | `PROMPT_GENERADOR_SKILLS.md` | Prompt maestro en español para generar la colección completa de skills. |
 | `references/accounting-api-workflows.md` | Flujos de API y contabilidad para usuario operativo. |
+| `references/fuentes-oficiales-tributarias.md` | Enlaces oficiales de AEAT, Agencia Tributaria Canaria, BOE y BOC. |
 | `references/api.md` | API REST, filtros, autenticación, recursos y MCP. |
 | `references/plugins.md` | Desarrollo de plugins. |
 | `references/models.md` | Modelos principales: facturas, asientos, partidas, subcuentas, impuestos, pagos y cobros. |
