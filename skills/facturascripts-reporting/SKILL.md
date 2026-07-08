@@ -1,34 +1,35 @@
 ---
 name: facturascripts-reporting
 description: >
-  Helps generate reproducible FacturaScripts reports for issued invoices, received invoices, payments, collections, accounting journal, ledgers, ageing and exports. Use when the user asks for accounting, billing or payment reports from FacturaScripts data.
+  Ayuda a generar informes reproducibles de FacturaScripts sobre facturas expedidas, facturas recibidas, cobros, pagos, diario contable, mayores, vencimientos y exportaciones. Usar cuando el usuario pida informes contables, de facturación o de tesorería a partir de datos de FacturaScripts.
 ---
 
 # FacturaScripts Reporting
 
-Use this skill for reports and exports based on FacturaScripts data.
+Usa este skill para informes y exportaciones basadas en datos de FacturaScripts.
 
-## Read first
+## Leer primero
 
-| Task | Reference |
+| Tarea | Referencia |
 | --- | --- |
-| Report workflow | `../../references/accounting-api-workflows.md` |
-| API filters and pagination | `../../references/api.md` |
-| Models and joins | `../../references/models.md` |
-| Export libraries | `../../references/libraries.md` |
+| Flujo de informes | `../../references/accounting-api-workflows.md` |
+| Filtros y paginación API | `../../references/api.md` |
+| Modelos y relaciones | `../../references/models.md` |
+| Librerías de exportación | `../../references/libraries.md` |
+| Fuentes oficiales tributarias | `../../references/fuentes-oficiales-tributarias.md` |
 
-## Rules
+## Reglas
 
-- Every report must state period, filters, source resources and generation date.
-- Separate net base, tax quota, retention, gross total, paid amount and pending amount.
-- Paginate API queries.
-- Do not hide excluded records; report exclusions and assumptions.
-- Validate totals against lines or document headers when possible.
-- For accounting reports, flag unbalanced entries.
+- Todo informe debe indicar periodo, filtros, recursos origen y fecha de generación.
+- Separa base imponible, cuota, retención, total, importe cobrado/pagado e importe pendiente.
+- Pagina las consultas API.
+- No ocultes registros excluidos: informa exclusiones y supuestos.
+- Valida totales contra líneas o cabeceras del documento cuando sea posible.
+- En informes contables, marca asientos descuadrados.
 
-## Useful prompts
+## Prompts útiles
 
-- Generate issued invoices report for Q1 2026 grouped by customer and tax code.
-- Generate received invoices report by supplier with paid and pending totals.
-- Export the accounting journal for March 2026 as CSV.
-- Create a ledger report with opening balance, movements and closing balance.
+- Genera un informe de facturas expedidas del primer trimestre de 2026 agrupado por cliente y código de impuesto.
+- Genera un informe de facturas recibidas por proveedor con totales pagados y pendientes.
+- Exporta el diario contable de marzo de 2026 como CSV.
+- Crea un informe de mayor con saldo inicial, movimientos y saldo final.
