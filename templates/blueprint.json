@@ -1,0 +1,76 @@
+{
+  "$schema": "https://erseco.github.io/facturascripts-playground/assets/blueprints/blueprint-schema.json",
+  "meta": {
+    "title": "Demo de mi plugin",
+    "author": "tu-usuario",
+    "description": "Entorno listo para probar el plugin en FacturaScripts Playground"
+  },
+  "debug": {
+    "enabled": false
+  },
+  "landingPage": "/AdminPlugins",
+  "siteOptions": {
+    "title": "Mi Plugin Demo",
+    "locale": "es_ES",
+    "timezone": "Europe/Madrid"
+  },
+  "login": {
+    "username": "admin",
+    "password": "admin"
+  },
+  "install": {
+    "codpais": "ESP",
+    "empresa": "Mi Empresa Demo",
+    "cifnif": "B12345678",
+    "ciudad": "Madrid",
+    "provincia": "Madrid",
+    "regimeniva": "General",
+    "defaultplan": true
+  },
+  "plugins": [
+    "https://github.com/tu-usuario/tu-plugin/tree/main"
+  ],
+  "settings": {
+    "email": {
+      "email": "demo@example.com",
+      "host": "smtp.example.com",
+      "port": "587",
+      "user": "demo@example.com",
+      "password": "demo",
+      "mailer": "smtp",
+      "enc": "tls"
+    }
+  },
+  "seed": {
+    "customers": [
+      {
+        "codcliente": "CDEMO1",
+        "nombre": "Cliente Demo",
+        "cifnif": "12345678Z",
+        "email": "cliente@example.com",
+        "telefono1": "+34910000001",
+        "direccion": "Calle Demo 1",
+        "ciudad": "Madrid",
+        "provincia": "Madrid",
+        "codpais": "ESP"
+      }
+    ],
+    "suppliers": [
+      {
+        "codproveedor": "PDEMO1",
+        "nombre": "Proveedor Demo",
+        "cifnif": "B12345678",
+        "email": "proveedor@example.com",
+        "telefono1": "+34910000002"
+      }
+    ],
+    "products": [
+      {
+        "referencia": "SKU-DEMO-001",
+        "descripcion": "Producto demo",
+        "precio": 19.95,
+        "stockfis": 25
+      }
+    ]
+  }
+}

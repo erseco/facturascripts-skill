@@ -16,6 +16,9 @@ Este skill cubre la totalidad de FacturaScripts 2025 y permite:
 - Depurar y modificar codigo existente de plugins.
 - Entender la arquitectura interna del ERP para tomar decisiones de desarrollo informadas.
 - Trabajar con la contabilidad, facturacion, stock, compras, ventas y CRM del sistema.
+- Montar un entorno de desarrollo y pruebas reproducible, probar plugins y PRs en el
+  navegador (FacturaScripts Playground con WebAssembly) y automatizar el release y la
+  publicacion en la forja oficial.
 
 ---
 
@@ -43,6 +46,13 @@ facturascripts-skill/
     security.md                     Seguridad, usuarios, roles, permisos (1,840 lineas)
     translations.md                 Traducciones e internacionalizacion (1,181 lineas)
     quick-reference.md              Consulta rapida de clases y metodos (454 lineas)
+    dev-tooling.md                  Plantilla, Playground (WASM) y GitHub Actions de CI/preview/release
+  templates/
+    .github/workflows/ci.yml        CI: entorno Docker + matriz de PHP
+    .github/workflows/pr-preview.yml Enlace de preview en el Playground por cada PR
+    .github/workflows/release.yml   ZIP + GitHub Release + publicacion en la forja
+    blueprint.json                  Configuracion del Playground para probar el plugin
+    scripts/rename-plugin.sh        Renombra PluginTemplate al nombre real
 ```
 
 ---
@@ -214,6 +224,10 @@ Guia completa para crear plugins de principio a fin:
 ### quick-reference.md - Consulta rapida
 
 Tabla de referencia compacta con las clases, metodos y patrones mas utilizados para consultas rapidas durante el desarrollo.
+
+### dev-tooling.md - Entorno, pruebas y publicacion
+
+Referencia opcional con el ecosistema de herramientas para el ciclo de vida de un plugin (entorno Docker, pruebas en el navegador con WebAssembly y automatizacion de releases), con archivos listos para copiar en `templates/`.
 
 ---
 

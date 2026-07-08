@@ -1,0 +1,41 @@
+---
+# Publica en cada Pull Request un comentario "sticky" con un enlace para probar
+# la rama del PR en FacturaScripts Playground (sin instalar nada).
+#
+# Action: https://github.com/erseco/action-facturascripts-playground-pr-preview
+#
+# Personaliza:
+#   - title / description: lo que vera el revisor
+#   - extra-plugins: dependencias del plugin que tambien quieras activar
+#   - seed-json / blueprint-json: datos demo o configuracion avanzada
+name: PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add FacturaScripts Playground preview
+        uses: erseco/action-facturascripts-playground-pr-preview@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # ZIP de la rama del PR. Para PRs desde forks puede requerir ajustes.
+          zip-url: https://github.com/${{ github.repository }}/archive/refs/heads/${{ github.head_ref }}.zip
+          title: ${{ github.event.repository.name }} - PR Preview
+          description: Prueba esta PR en FacturaScripts Playground
+          landing-page: /AdminPlugins
+          site-locale: es_ES
+          site-timezone: Europe/Madrid
+          # extra-plugins: '["CommandPalette"]'
+          # seed-json: >-
+          #   {"customers":[{"codcliente":"CDEMO1","nombre":"Cliente Demo"}],
+          #    "products":[{"referencia":"SKU-DEMO-001","descripcion":"Producto demo","precio":19.95}]}
+          extra-text: |
+            **Como probar:** abre el enlace, ve a *Admin > Plugins*, activa el plugin y verifica los cambios.
