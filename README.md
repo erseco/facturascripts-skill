@@ -5,7 +5,21 @@ Colección de skills en español para trabajar con FacturaScripts desde dos pers
 - **Desarrollo**: plugins, modelos, controladores, XMLView, API REST, MCP, pruebas, CI y publicación.
 - **Uso contable y operativo**: facturación, cobros, pagos, asientos, diario, mayores, informes de facturas expedidas y recibidas, IVA e IGIC.
 
-Este repositorio es una **evolución del skill original de Jose Conti** para FacturaScripts, publicado originalmente en `joseconti/facturascripts-skill`, y mantiene esa atribución como base del trabajo. La rama actual reorganiza el material para evolucionar desde un único skill generalista hacia una colección de skills especializados con carga progresiva.
+Este repositorio es una **evolución del skill original de Jose Conti** para FacturaScripts, publicado originalmente en `joseconti/facturascripts-skill`, y mantiene esa atribución como base del trabajo.
+
+## Especificación seguida
+
+Esta colección sigue la especificación de **Agent Skills** documentada en <https://agentskills.io/specification>:
+
+- Un skill es una carpeta que contiene, como mínimo, un archivo `SKILL.md`.
+- `SKILL.md` debe tener frontmatter YAML seguido de contenido Markdown.
+- Los campos obligatorios son `name` y `description`.
+- `name` debe tener como máximo 64 caracteres, usar minúsculas, números y guiones, no empezar ni terminar en guion, no contener `--` y coincidir con el nombre de la carpeta padre.
+- `description` debe tener entre 1 y 1024 caracteres y explicar qué hace el skill y cuándo debe usarse.
+- `scripts/`, `references/` y `assets/` son directorios opcionales para carga progresiva.
+- Conviene mantener `SKILL.md` por debajo de 500 líneas y mover detalle a `references/`.
+
+Por esa razón el skill raíz usa `name: facturascripts-skill`, coincidiendo con el nombre del repositorio/carpeta cuando se clona como `facturascripts-skill`.
 
 ## Idioma y público objetivo
 
@@ -15,15 +29,6 @@ El público principal es hispanohablante y, en especial, usuarios y desarrollado
 - Los nombres técnicos se mantienen cuando son nombres reales de FacturaScripts, rutas, clases, endpoints o archivos: `SKILL.md`, `XMLView`, `FacturaCliente`, `/api/3`, `Token`.
 - Los ejemplos de uso deben estar en español.
 - El código, cuando se genere para plugins, puede mantenerse en inglés si el proyecto lo requiere, pero la explicación al usuario debe estar en español.
-
-## Qué cambia en esta evolución
-
-- El `SKILL.md` raíz pasa a funcionar como **router de compatibilidad**.
-- Se añade una referencia específica para **flujos contables y API**: `references/accounting-api-workflows.md`.
-- Se añade una referencia de **fuentes oficiales tributarias**: `references/fuentes-oficiales-tributarias.md`.
-- Se añade un prompt maestro en español para que una IA multiagente genere una colección completa de skills: `PROMPT_GENERADOR_SKILLS.md`.
-- Se documentan instrucciones de instalación y uso.
-- Se separan claramente los usos de desarrollador y de usuario contable.
 
 ## Organización recomendada de la colección
 
@@ -52,7 +57,25 @@ cd facturascripts-skill
 
 Usa la carpeta completa como skill, ya que contiene `SKILL.md` en la raíz y las referencias en `references/`.
 
-### Opción B: instalarlo en Claude Code
+### Opción B: descargar el ZIP de una release
+
+Cuando se publique un tag `v*`, el workflow de release genera:
+
+```text
+facturascripts-skill-<tag>.zip
+facturascripts-skill-<tag>.zip.sha256
+```
+
+Por ejemplo:
+
+```text
+facturascripts-skill-v1.zip
+facturascripts-skill-v1.zip.sha256
+```
+
+Descarga el ZIP desde la última release y súbelo como skill en el cliente compatible que uses. Se usa `.zip` porque la especificación de Agent Skills define una carpeta con `SKILL.md`; no define una extensión `.skill` obligatoria.
+
+### Opción C: instalarlo en Claude Code
 
 En Claude Code, copia o enlaza la carpeta del skill dentro del directorio de skills que uses para tu proyecto o entorno. La carpeta debe contener:
 
@@ -71,19 +94,17 @@ Después abre Claude Code en un proyecto relacionado con FacturaScripts y pide u
 Usa el skill de FacturaScripts para crear un plugin que añada un informe de facturas recibidas por proveedor.
 ```
 
-Cuando la colección multi-skill esté generada, instala cada carpeta de `skills/<nombre-del-skill>/` como skill independiente. Cada skill debe tener su propio `SKILL.md`.
-
-### Opción C: instalarlo en Claude.ai
+### Opción D: instalarlo en Claude.ai
 
 Crea un ZIP con la carpeta del skill:
 
 ```bash
-zip -r facturascripts-skill.zip SKILL.md README.md references skills PROMPT_GENERADOR_SKILLS.md
+bash scripts/package_skill.sh dev
 ```
 
-Después súbelo desde la configuración de Skills de Claude.ai. Si generas la colección multi-skill, crea un ZIP por cada carpeta de `skills/` o empaqueta solo el skill que quieras usar.
+O descarga el ZIP generado en una release. Después súbelo desde la configuración de Skills de Claude.ai.
 
-### Opción D: usarlo como especificación para generar nuevos skills
+### Opción E: usarlo como especificación para generar nuevos skills
 
 Usa `PROMPT_GENERADOR_SKILLS.md` como prompt principal en una IA con capacidad multiagente o en un entorno de generación asistida. El objetivo de ese prompt es producir la colección final de skills, referencias, tests/evals, README y empaquetado.
 
@@ -141,6 +162,56 @@ Obtén el mayor de la subcuenta 4300001 para 2026 con saldo inicial, movimientos
 ```text
 Marca como pagada esta factura de proveedor con fecha de pago 2026-02-15 y forma de pago transferencia, pero primero valida que la factura exista, que el ejercicio esté abierto y que la forma de pago sea válida.
 ```
+
+## Validación en CI
+
+El repositorio incluye un validador mínimo en `scripts/validate_skills.py` y un workflow en `.github/workflows/validate-skills.yml`.
+
+La validación comprueba:
+
+- presencia de `SKILL.md`;
+- frontmatter YAML válido;
+- campos obligatorios `name` y `description`;
+- formato de `name` según Agent Skills;
+- coincidencia entre `name` y carpeta padre;
+- límite de 1024 caracteres para `description`;
+- límite de 500 caracteres para `compatibility`, si existe;
+- tipo correcto de `allowed-tools`, si existe;
+- aviso si un `SKILL.md` supera 500 líneas;
+- detección básica de secretos evidentes.
+
+Ejecución local:
+
+```bash
+python -m pip install pyyaml
+python scripts/validate_skills.py .
+```
+
+## Releases y versionado
+
+El workflow `.github/workflows/release.yml` se ejecuta al publicar un tag `v*`:
+
+```bash
+git tag v1
+git push origin v1
+```
+
+También admite versionado semántico:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+La convención `v0`, `v1`, `v2` es válida si quieres releases simples. Si más adelante necesitas parches, puedes pasar a `v1.0.0`, `v1.0.1`, etc.
+
+El workflow:
+
+1. valida los skills;
+2. genera `dist/facturascripts-skill-<tag>.zip`;
+3. genera `dist/facturascripts-skill-<tag>.zip.sha256`;
+4. sube ambos como artefactos;
+5. si el evento viene de un tag, los adjunta a la GitHub Release.
 
 ## Fuentes oficiales tributarias enlazadas
 
@@ -222,11 +293,12 @@ Flujo recomendado:
 ```bash
 git checkout devel
 git pull
-git checkout -b feat/accounting-api-skill-collection
+git checkout -b feat/mi-cambio
 # modificar SKILL.md, README.md, references/ y skills/
+python scripts/validate_skills.py .
 git add .
-git commit -m "Add accounting and API skill collection plan"
-git push -u origin feat/accounting-api-skill-collection
+git commit -m "Describe el cambio"
+git push -u origin feat/mi-cambio
 ```
 
 Abre un PR contra `devel` con resumen de cambios, fuentes revisadas y checklist de validación.
