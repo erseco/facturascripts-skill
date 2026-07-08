@@ -10,13 +10,13 @@ https://agentskills.io/specification that matter most for CI:
 - name follows the Agent Skills naming rules.
 - name matches the parent directory name.
 - description and compatibility length limits are respected.
+- metadata is a string-to-string map and includes version.
 - SKILL.md stays reasonably small.
 """
 
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import sys
 from pathlib import Path
@@ -25,6 +25,7 @@ from typing import Any
 import yaml
 
 NAME_RE = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$")
+VERSION_RE = re.compile(r"^v[0-9]+(?:\.[0-9]+){0,2}(?:[-+][A-Za-z0-9.-]+)?$|^dev$|^manual$")
 SECRET_PATTERNS = [
     re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),
     re.compile(r"sk-ant-[A-Za-z0-9_-]{20,}"),
@@ -83,6 +84,36 @@ def expected_name_for(path: Path, root: Path) -> str:
     return path.parent.name
 
 
+def validate_metadata_field(frontmatter: dict[str, Any], rel: Path) -> int:
+    failures = 0
+    metadata = frontmatter.get("metadata")
+
+    if metadata is None:
+        error(f"{rel}: falta 'metadata.version' con valor por defecto 'v0'")
+        return 1
+
+    if not isinstance(metadata, dict):
+        error(f"{rel}: 'metadata' debe ser un mapa de cadenas")
+        return 1
+
+    for key, value in metadata.items():
+        if not isinstance(key, str) or not isinstance(value, str):
+            error(f"{rel}: 'metadata' debe contener solo claves y valores de texto")
+            failures += 1
+
+    version = metadata.get("version")
+    if not isinstance(version, str) or not version.strip():
+        error(f"{rel}: falta 'metadata.version' como texto no vacío")
+        failures += 1
+    elif not VERSION_RE.match(version):
+        warning(
+            f"{rel}: 'metadata.version' tiene formato no habitual ({version!r}); "
+            "se recomienda v0, v1, v1.0.0, dev o manual"
+        )
+
+    return failures
+
+
 def validate_skill(path: Path, root: Path) -> int:
     failures = 0
     rel = path.relative_to(root)
@@ -136,6 +167,8 @@ def validate_skill(path: Path, root: Path) -> int:
     if allowed_tools is not None and not isinstance(allowed_tools, str):
         error(f"{rel}: 'allowed-tools' debe ser una cadena separada por espacios")
         failures += 1
+
+    failures += validate_metadata_field(metadata, rel)
 
     line_count = len(path.read_text(encoding="utf-8").splitlines())
     if line_count > 500:
