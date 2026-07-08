@@ -1,35 +1,36 @@
 ---
 name: facturascripts-accounting-user
 description: >
-  Helps accounting users operate FacturaScripts with invoices, payments, collections, journal entries, ledgers, accounting journal, subaccounts and reports. Use when the user asks to account invoices, upload entries, consult ledgers or obtain accounting information through FacturaScripts.
+  Ayuda a usuarios contables a operar FacturaScripts con facturas, cobros, pagos, asientos, mayores, diario contable, subcuentas e informes. Usar cuando el usuario quiera contabilizar facturas, subir asientos, consultar mayores o extraer información contable desde FacturaScripts.
 ---
 
 # FacturaScripts Accounting User
 
-Use this skill for accounting workflows as an operational user.
+Usa este skill para flujos contables como usuario operativo.
 
-## Read first
+## Leer primero
 
-| Task | Reference |
+| Tarea | Referencia |
 | --- | --- |
-| Accounting/API workflow | `../../references/accounting-api-workflows.md` |
-| Accounting models | `../../references/models.md` |
-| API usage | `../../references/api.md` |
-| Exports and accounting libraries | `../../references/libraries.md` |
+| Flujo contable/API | `../../references/accounting-api-workflows.md` |
+| Modelos contables | `../../references/models.md` |
+| Uso de API | `../../references/api.md` |
+| Exportaciones y librerías contables | `../../references/libraries.md` |
+| Fuentes oficiales tributarias | `../../references/fuentes-oficiales-tributarias.md` |
 
-## Rules
+## Reglas
 
-- Treat accounting writes as high risk.
-- Always prepare a dry-run before creating entries, payments or invoices.
-- Do not invent subaccounts, journals, exercises, tax codes, customers, suppliers or payment methods.
-- Validate that debit equals credit before proposing any journal entry.
-- Validate date, exercise and journal before posting.
-- Prefer business operations that generate accounting automatically over direct `Asiento`/`Partida` writes.
-- State clearly whether data is read, written, simulated or exported.
+- Trata las escrituras contables como operaciones de alto riesgo.
+- Prepara siempre un dry-run antes de crear asientos, pagos, cobros o facturas.
+- No inventes subcuentas, diarios, ejercicios, códigos de impuesto, clientes, proveedores ni formas de pago.
+- Valida que debe y haber cuadran antes de proponer cualquier asiento.
+- Valida fecha, ejercicio y diario antes de contabilizar.
+- Prefiere operaciones de negocio que generen contabilidad automáticamente antes que escribir `Asiento`/`Partida` directamente.
+- Indica claramente si los datos se leen, se escriben, se simulan o se exportan.
 
-## Useful prompts
+## Prompts útiles
 
-- Prepare a dry-run for this manual journal entry and check that it balances.
-- Get the ledger for subaccount 4300001 from 2026-01-01 to 2026-03-31.
-- Generate the accounting journal for Q1 2026 and flag unbalanced entries.
-- Validate pending collections and payments by due date.
+- Prepara un dry-run para este asiento manual y comprueba que cuadra.
+- Obtén el mayor de la subcuenta 4300001 entre 2026-01-01 y 2026-03-31.
+- Genera el diario contable del primer trimestre de 2026 y marca asientos descuadrados.
+- Valida cobros y pagos pendientes por fecha de vencimiento.
