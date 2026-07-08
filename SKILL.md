@@ -5,6 +5,8 @@ description: >
   facturas, cobros, pagos, asientos, mayores, diario, informes e integraciones MCP/API. Usar cuando el usuario mencione
   FacturaScripts, plugins, API, FacturaCliente, FacturaProveedor, ReciboCliente, ReciboProveedor, Asiento, Partida,
   Subcuenta, diario, mayor, IVA, IGIC, facturas expedidas o facturas recibidas.
+metadata:
+  version: "v0"
 ---
 
 # Router de Skills de FacturaScripts
