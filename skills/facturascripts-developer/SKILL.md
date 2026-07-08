@@ -2,6 +2,8 @@
 name: facturascripts-developer
 description: >
   Ayuda a desarrollar plugins, controladores, modelos, vistas XMLView, endpoints API, integraciones MCP, pruebas y flujos de publicación para FacturaScripts. Usar cuando el usuario necesite crear, modificar, depurar o revisar código, plugins, vistas, modelos, informes o herramientas de desarrollo de FacturaScripts.
+metadata:
+  version: "v0"
 ---
 
 # FacturaScripts Developer
