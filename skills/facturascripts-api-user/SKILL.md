@@ -1,35 +1,35 @@
 ---
 name: facturascripts-api-user
 description: >
-  Helps use the FacturaScripts REST API safely for operational tasks: discovering resources, filtering, pagination, invoices, payments, exports and MCP/API clients. Use when the user asks to consult or update FacturaScripts data through /api/3 as an authenticated user.
+  Ayuda a usar la API REST de FacturaScripts de forma segura para tareas operativas: descubrimiento de recursos, filtros, paginación, facturas, cobros, pagos, exportaciones y clientes MCP/API. Usar cuando el usuario quiera consultar o actualizar datos de FacturaScripts mediante /api/3 como usuario autenticado.
 ---
 
 # FacturaScripts API User
 
-Use this skill for safe operational usage of the FacturaScripts REST API.
+Usa este skill para operar de forma segura con la API REST de FacturaScripts.
 
-## Read first
+## Leer primero
 
-| Task | Reference |
+| Tarea | Referencia |
 | --- | --- |
-| API basics | `../../references/api.md` |
-| Accounting API workflows | `../../references/accounting-api-workflows.md` |
-| Models and field names | `../../references/models.md` |
-| Security and API keys | `../../references/security.md` |
+| Base de la API | `../../references/api.md` |
+| Flujos contables por API | `../../references/accounting-api-workflows.md` |
+| Modelos y nombres de campos | `../../references/models.md` |
+| Seguridad y API Keys | `../../references/security.md` |
 
-## Rules
+## Reglas
 
-- Discover resources with `/api/3` or Swagger before assuming endpoint names.
-- Use the `Token` header for API-key authentication when available.
-- Use read-only keys for reports.
-- Never print or store tokens.
-- For writes, show endpoint, payload summary, validations and dry-run first.
-- Prefer form URL encoded payloads unless the endpoint schema says otherwise.
-- Paginate list queries and record filters used.
+- Descubre recursos con `/api/3` o Swagger antes de asumir nombres de endpoints.
+- Usa la cabecera `Token` para autenticación por API Key cuando esté disponible.
+- Usa claves de solo lectura para informes.
+- Nunca imprimas ni almacenes tokens.
+- Para escrituras, muestra primero endpoint, resumen del payload, validaciones y dry-run.
+- Prefiere payload `application/x-www-form-urlencoded` salvo que el endpoint indique otra cosa.
+- Pagina las consultas de listado y documenta los filtros usados.
 
-## Useful prompts
+## Prompts útiles
 
-- List issued invoices for this quarter and group totals by customer.
-- Create a dry-run payload for a supplier invoice from this CSV.
-- Mark this customer invoice as paid after validating receipts and payment method.
-- Build MCP tools for customers, suppliers, invoices, payments, journal and ledger.
+- Lista las facturas expedidas de este trimestre y agrupa totales por cliente.
+- Crea un payload en dry-run para una factura de proveedor a partir de este CSV.
+- Marca esta factura de cliente como cobrada después de validar recibos y forma de pago.
+- Construye herramientas MCP para clientes, proveedores, facturas, cobros, pagos, diario y mayor.
