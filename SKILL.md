@@ -69,5 +69,4 @@ Antes de devolver una respuesta final o confirmar cambios:
 - Los ejemplos son concretos y ejecutables.
 - Las operaciones contables incluyen dry-run, validación y notas de reversión cuando sea posible.
 - El README incluye instalación y uso.
-- La atribución a Jose Conti se conserva.
 - Las fuentes tributarias oficiales están enlazadas en `references/fuentes-oficiales-tributarias.md`.
