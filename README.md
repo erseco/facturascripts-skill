@@ -8,7 +8,7 @@ Colección de skills en español para trabajar con FacturaScripts desde dos pers
 - **Desarrollo**: plugins, modelos, controladores, XMLView, API REST, MCP, pruebas, CI y publicación.
 - **Uso contable y operativo**: facturación, cobros, pagos, asientos, diario, mayores, informes de facturas expedidas y recibidas, IVA e IGIC.
 
-Este repositorio es una **evolución del skill original de Jose Conti** para FacturaScripts, publicado originalmente en `joseconti/facturascripts-skill`, y mantiene esa atribución como base del trabajo.
+Este repositorio es una **evolución del skill original de Jose Conti** para FacturaScripts, publicado originalmente en `joseconti/facturascripts-skill`, y mantiene esa atribución como base del trabajo. También incorpora ideas organizativas del repositorio oficial `FacturaScripts/fs-claude-plugin`, atribuidas en `references/fs-claude-plugin.md`.
 
 ## Especificación seguida
 
@@ -64,7 +64,7 @@ La colección final debería organizarse en skills pequeños, autocontenidos y e
 | `facturascripts-tax-iva-igic` | Validar operaciones con IVA, IGIC, retenciones, exenciones e inversión del sujeto pasivo. |
 | `facturascripts-reporting` | Generar informes de facturas expedidas, recibidas, cobros, pagos, diario y mayor. |
 
-La estructura actual mantiene el skill raíz para compatibilidad y usa `PROMPT_GENERADOR_SKILLS.md` como especificación de generación de la colección completa.
+La estructura actual mantiene el skill raíz para compatibilidad y usa `PROMPT_GENERADOR_SKILLS.md` como especificación de generación de la colección completa. Para ampliar la taxonomía de tareas, consulta también `references/fs-claude-plugin.md`.
 
 ## Instalación
 
@@ -274,6 +274,7 @@ Los skills no deben inventar tipos fiscales, plazos ni obligaciones formales. Pa
 | `PROMPT_GENERADOR_SKILLS.md` | Prompt maestro en español para generar la colección completa de skills. |
 | `references/accounting-api-workflows.md` | Flujos de API y contabilidad para usuario operativo. |
 | `references/fuentes-oficiales-tributarias.md` | Enlaces oficiales de AEAT, Agencia Tributaria Canaria, BOE y BOC. |
+| `references/fs-claude-plugin.md` | Ideas adaptadas y atribuidas del repositorio oficial `FacturaScripts/fs-claude-plugin`. |
 | `references/api.md` | API REST, filtros, autenticación, recursos y MCP. |
 | `references/plugins.md` | Desarrollo de plugins. |
 | `references/models.md` | Modelos principales: facturas, asientos, partidas, subcuentas, impuestos, pagos y cobros. |
@@ -335,6 +336,8 @@ Abre un PR contra `devel` con resumen de cambios, fuentes revisadas y checklist 
 
 Este trabajo parte del skill original de **Jose Conti** para FacturaScripts y lo reorganiza como una colección especializada orientada a desarrollo, API y uso contable.
 
+También adapta ideas organizativas y patrones del repositorio oficial **FacturaScripts/fs-claude-plugin**, de FacturaScripts, con licencia MIT. Consulta `references/fs-claude-plugin.md` para ver procedencia y alcance de la adaptación.
+
 ## Licencia
 
-Este repositorio documenta y organiza conocimiento técnico alrededor de FacturaScripts. Revisa la licencia del repositorio y la licencia LGPL v3 del proyecto FacturaScripts para el código fuente original del ERP.
+Este repositorio documenta y organiza conocimiento técnico alrededor de FacturaScripts. Revisa la licencia del repositorio, la licencia MIT de `FacturaScripts/fs-claude-plugin` y la licencia LGPL v3 del proyecto FacturaScripts para el código fuente original del ERP.
