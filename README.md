@@ -1,7 +1,7 @@
 # Colección de Skills para FacturaScripts
 
-[![Descargar última release](https://img.shields.io/github/v/release/erseco/facturascripts-skill?label=descargar%20skill&logo=github&sort=semver)](https://github.com/erseco/facturascripts-skill/releases/latest/download/facturascripts-skill.zip)
-[![Ver releases](https://img.shields.io/badge/GitHub-Releases-black?logo=github)](https://github.com/erseco/facturascripts-skill/releases/latest)
+[![Última release](https://img.shields.io/github/v/release/erseco/facturascripts-skill?label=última%20release&logo=github&sort=semver)](https://github.com/erseco/facturascripts-skill/releases/latest)
+[![Descargar skill](https://img.shields.io/badge/descargar-skill-blue?logo=github)](https://github.com/erseco/facturascripts-skill/releases/latest)
 
 Colección de skills en español para trabajar con FacturaScripts desde dos perspectivas complementarias:
 
@@ -81,11 +81,9 @@ Usa la carpeta completa como skill, ya que contiene `SKILL.md` en la raíz y las
 
 ### Opción B: descargar el ZIP de una release
 
-Cuando se publique un tag `v*`, el workflow de release genera estos assets:
+Cuando se publique un tag `v*`, el workflow de release genera estos assets propios:
 
 ```text
-facturascripts-skill.zip
-facturascripts-skill.zip.sha256
 facturascripts-skill-<tag>.zip
 facturascripts-skill-<tag>.zip.sha256
 ```
@@ -93,13 +91,13 @@ facturascripts-skill-<tag>.zip.sha256
 Por ejemplo:
 
 ```text
-facturascripts-skill.zip
 facturascripts-skill-v1.zip
+facturascripts-skill-v1.zip.sha256
 ```
 
-El asset `facturascripts-skill.zip` tiene un nombre estable para que el badge del README pueda apuntar siempre a la última release. El asset con tag conserva una referencia explícita a la versión publicada.
+El ZIP versionado es el paquete preparado por el workflow, con `metadata.version` estampado con el tag. Los archivos `Source code (zip)` y `Source code (tar.gz)` los añade GitHub automáticamente a todas las releases y no sustituyen al paquete del skill.
 
-Descarga el ZIP desde la última release y súbelo como skill en el cliente compatible que uses. Se usa `.zip` porque la especificación de Agent Skills define una carpeta con `SKILL.md`; no define una extensión `.skill` obligatoria.
+Descarga el ZIP versionado desde la última release y súbelo como skill en el cliente compatible que uses. Se usa `.zip` porque la especificación de Agent Skills define una carpeta con `SKILL.md`; no define una extensión `.skill` obligatoria.
 
 ### Opción C: instalarlo en Claude Code
 
@@ -240,9 +238,8 @@ El workflow:
 3. reemplaza `metadata.version` por el tag del paquete;
 4. genera `dist/facturascripts-skill-<tag>.zip`;
 5. genera `dist/facturascripts-skill-<tag>.zip.sha256`;
-6. genera también `dist/facturascripts-skill.zip` y `dist/facturascripts-skill.zip.sha256` como nombres estables para descarga directa;
-7. sube todos los ZIPs y checksums como artefactos;
-8. si el evento viene de un tag, los adjunta a la GitHub Release.
+6. sube el ZIP versionado y su checksum como artefactos;
+7. si el evento viene de un tag, los adjunta a la GitHub Release.
 
 ## Fuentes oficiales tributarias enlazadas
 
