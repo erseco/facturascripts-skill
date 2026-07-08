@@ -16,10 +16,29 @@ Esta colección sigue la especificación de **Agent Skills** documentada en <htt
 - Los campos obligatorios son `name` y `description`.
 - `name` debe tener como máximo 64 caracteres, usar minúsculas, números y guiones, no empezar ni terminar en guion, no contener `--` y coincidir con el nombre de la carpeta padre.
 - `description` debe tener entre 1 y 1024 caracteres y explicar qué hace el skill y cuándo debe usarse.
+- `metadata` es opcional en la especificación y permite claves/valores adicionales.
 - `scripts/`, `references/` y `assets/` son directorios opcionales para carga progresiva.
 - Conviene mantener `SKILL.md` por debajo de 500 líneas y mover detalle a `references/`.
 
 Por esa razón el skill raíz usa `name: facturascripts-skill`, coincidiendo con el nombre del repositorio/carpeta cuando se clona como `facturascripts-skill`.
+
+## Versionado del skill
+
+Todos los `SKILL.md` incluyen una versión inicial en el frontmatter:
+
+```yaml
+metadata:
+  version: "v0"
+```
+
+La especificación de Agent Skills no define `version` como campo raíz estándar, pero sí permite usar `metadata` para propiedades adicionales y muestra `metadata.version` como ejemplo. Por eso se usa `metadata.version` en lugar de un campo raíz `version`.
+
+Durante el empaquetado, `scripts/package_skill.sh` no modifica los archivos del repositorio. Copia el skill a una carpeta temporal y reemplaza `metadata.version` por el tag usado en el paquete. Por ejemplo, al publicar `v1` el ZIP contendrá:
+
+```yaml
+metadata:
+  version: "v1"
+```
 
 ## Idioma y público objetivo
 
@@ -176,6 +195,8 @@ La validación comprueba:
 - coincidencia entre `name` y carpeta padre;
 - límite de 1024 caracteres para `description`;
 - límite de 500 caracteres para `compatibility`, si existe;
+- `metadata` como mapa de cadenas;
+- presencia de `metadata.version`;
 - tipo correcto de `allowed-tools`, si existe;
 - aviso si un `SKILL.md` supera 500 líneas;
 - detección básica de secretos evidentes.
@@ -208,10 +229,12 @@ La convención `v0`, `v1`, `v2` es válida si quieres releases simples. Si más 
 El workflow:
 
 1. valida los skills;
-2. genera `dist/facturascripts-skill-<tag>.zip`;
-3. genera `dist/facturascripts-skill-<tag>.zip.sha256`;
-4. sube ambos como artefactos;
-5. si el evento viene de un tag, los adjunta a la GitHub Release.
+2. genera una copia temporal del skill;
+3. reemplaza `metadata.version` por el tag del paquete;
+4. genera `dist/facturascripts-skill-<tag>.zip`;
+5. genera `dist/facturascripts-skill-<tag>.zip.sha256`;
+6. sube ambos como artefactos;
+7. si el evento viene de un tag, los adjunta a la GitHub Release.
 
 ## Fuentes oficiales tributarias enlazadas
 
