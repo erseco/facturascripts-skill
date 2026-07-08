@@ -22,3 +22,8 @@ $RECYCLE.BIN/
 *.tmp
 *.bak
 *.log
+
+# Paquetes generados
+dist/
+*.zip
+*.sha256

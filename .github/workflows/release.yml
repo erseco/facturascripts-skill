@@ -1,0 +1,64 @@
+---
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versión para el paquete, por ejemplo v1 o v1.0.0"
+        required: false
+        default: "manual"
+
+permissions:
+  contents: write
+
+jobs:
+  package_and_upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME}"
+          fi
+
+          if [ -z "${VERSION}" ]; then
+            echo "::error::Could not determine package version" >&2
+            exit 1
+          fi
+
+          echo "PACKAGE_VERSION=${VERSION}" >> "${GITHUB_ENV}"
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip pyyaml
+
+      - name: Build skill package
+        run: bash scripts/package_skill.sh "${PACKAGE_VERSION}"
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: facturascripts-skill-${{ env.PACKAGE_VERSION }}
+          path: dist/*
+
+      - name: Upload ZIP to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v3
+        with:
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

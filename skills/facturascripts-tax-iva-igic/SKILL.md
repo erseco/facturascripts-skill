@@ -2,6 +2,8 @@
 name: facturascripts-tax-iva-igic
 description: >
   Ayuda a validar IVA, IGIC, retenciones, exenciones, inversión del sujeto pasivo, facturas expedidas y facturas recibidas en FacturaScripts sin sustituir asesoramiento fiscal. Usar cuando el usuario pregunte por IVA español, IGIC canario, desglose de impuestos o validación fiscal dentro de FacturaScripts.
+metadata:
+  version: "v0"
 ---
 
 # FacturaScripts Tax IVA/IGIC

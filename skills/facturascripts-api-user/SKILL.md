@@ -2,6 +2,8 @@
 name: facturascripts-api-user
 description: >
   Ayuda a usar la API REST de FacturaScripts de forma segura para tareas operativas: descubrimiento de recursos, filtros, paginación, facturas, cobros, pagos, exportaciones y clientes MCP/API. Usar cuando el usuario quiera consultar o actualizar datos de FacturaScripts mediante /api/3 como usuario autenticado.
+metadata:
+  version: "v0"
 ---
 
 # FacturaScripts API User

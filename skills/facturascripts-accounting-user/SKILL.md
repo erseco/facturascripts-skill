@@ -2,6 +2,8 @@
 name: facturascripts-accounting-user
 description: >
   Ayuda a usuarios contables a operar FacturaScripts con facturas, cobros, pagos, asientos, mayores, diario contable, subcuentas e informes. Usar cuando el usuario quiera contabilizar facturas, subir asientos, consultar mayores o extraer información contable desde FacturaScripts.
+metadata:
+  version: "v0"
 ---
 
 # FacturaScripts Accounting User
