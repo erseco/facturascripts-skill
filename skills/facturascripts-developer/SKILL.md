@@ -1,38 +1,38 @@
 ---
 name: facturascripts-developer
 description: >
-  Helps develop FacturaScripts plugins, controllers, models, XMLView files, API endpoints, MCP integrations, tests and release workflows. Use when the user needs to create, modify, debug or review FacturaScripts code, plugins, views, models, reports or developer tooling.
+  Ayuda a desarrollar plugins, controladores, modelos, vistas XMLView, endpoints API, integraciones MCP, pruebas y flujos de publicación para FacturaScripts. Usar cuando el usuario necesite crear, modificar, depurar o revisar código, plugins, vistas, modelos, informes o herramientas de desarrollo de FacturaScripts.
 ---
 
 # FacturaScripts Developer
 
-Use this skill for developer work on FacturaScripts.
+Usa este skill para trabajos de desarrollo sobre FacturaScripts.
 
-## Read first
+## Leer primero
 
-| Task | Reference |
+| Tarea | Referencia |
 | --- | --- |
-| New plugin | `../../references/plugins.md` |
-| Models and tables | `../../references/models.md`, `../../references/database.md` |
-| Controllers | `../../references/controllers.md`, `../../references/controllers-advanced.md` |
-| XMLView, widgets and Twig | `../../references/views-widgets.md` |
-| API integrations | `../../references/api.md`, `../../references/accounting-api-workflows.md` |
-| Security and permissions | `../../references/security.md` |
-| CI, previews and release | `../../references/dev-tooling.md` |
+| Plugin nuevo | `../../references/plugins.md` |
+| Modelos y tablas | `../../references/models.md`, `../../references/database.md` |
+| Controladores | `../../references/controllers.md`, `../../references/controllers-advanced.md` |
+| XMLView, widgets y Twig | `../../references/views-widgets.md` |
+| Integraciones API | `../../references/api.md`, `../../references/accounting-api-workflows.md` |
+| Seguridad y permisos | `../../references/security.md` |
+| CI, previews y release | `../../references/dev-tooling.md` |
 
-## Rules
+## Reglas
 
-- Do not modify FacturaScripts core files unless the user explicitly works on a core fork.
-- Prefer plugins, Mod, controllers, models, XMLView, workers and custom API resources.
-- Validate models in `test()` before `save()`.
-- Keep code and comments in English.
-- Respect existing FacturaScripts naming conventions.
-- Check permissions, CSRF and roles for user-facing controllers.
-- Use the installed version and plugins as the source of truth.
+- No modifiques archivos del core de FacturaScripts salvo que el usuario indique explícitamente que trabaja sobre un fork del core.
+- Prefiere plugins, Mod, controladores, modelos, XMLView, workers y recursos API propios.
+- Valida modelos en `test()` antes de `save()`.
+- Mantén código y comentarios en inglés si el proyecto lo requiere, pero explica al usuario en español.
+- Respeta las convenciones de nombres de FacturaScripts.
+- Revisa permisos, CSRF y roles en controladores con interacción de usuario.
+- Usa la versión instalada y los plugins activos como fuente de verdad.
 
-## Useful prompts
+## Prompts útiles
 
-- Create a FacturaScripts plugin that adds a report with filters by exercise, date range and supplier.
-- Review this `ListController` and its XMLView for permissions, naming and widget errors.
-- Add a custom API resource to export a ledger report as CSV.
-- Design a CI workflow for packaging and publishing a FacturaScripts plugin.
+- Crea un plugin de FacturaScripts que añada un informe con filtros por ejercicio, rango de fechas y proveedor.
+- Revisa este `ListController` y su XMLView para detectar errores de permisos, nombres y widgets.
+- Añade un recurso API personalizado para exportar un mayor contable en CSV.
+- Diseña un flujo de CI para empaquetar y publicar un plugin de FacturaScripts.
