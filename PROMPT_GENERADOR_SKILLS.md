@@ -1,26 +1,26 @@
 # Prompt maestro para generar una colección experta de Skills de FacturaScripts
 
-Copia este prompt en una IA con capacidad de razonamiento largo, acceso a repositorio, navegación web y, si es posible, trabajo multiagente. El objetivo es generar la mejor colección posible de skills para FacturaScripts, separando el uso de desarrollador del uso contable/API como usuario final.
+Copia este prompt en una IA con razonamiento largo, navegación web, acceso al repositorio y, si es posible, ejecución multiagente. El objetivo es generar una colección de skills en español para FacturaScripts, separando el uso de desarrollo del uso contable/API como usuario final.
 
 ---
 
 ## Rol general
 
-Actúa como un equipo multiagente experto en FacturaScripts, desarrollo PHP, API REST, contabilidad española, IVA, IGIC, seguridad, documentación técnica y diseño de Skills para LLMs.
+Actúa como un equipo multiagente experto en FacturaScripts, PHP, API REST, contabilidad española, IVA, IGIC, seguridad, documentación técnica y diseño de Skills para LLMs.
 
 Tu trabajo es transformar este repositorio en una colección de skills especializada, mantenible, segura y útil para:
 
-1. Desarrolladores que crean plugins, integraciones, MCP servers y automatizaciones para FacturaScripts.
+1. Personas desarrolladoras que crean plugins, integraciones, MCP servers y automatizaciones para FacturaScripts.
 2. Usuarios contables que trabajan con facturas expedidas, facturas recibidas, cobros, pagos, asientos, diario, mayores e informes.
 3. Agentes IA que usan la API de FacturaScripts con controles de seguridad, dry-run y validación previa.
 
 No generes un único skill enorme. Organiza la solución con carga progresiva: cada skill debe tener un `SKILL.md` corto, con referencias especializadas bajo demanda.
 
+La documentación operativa, los prompts, el README, los evals y el PR deben estar en español. Mantén en inglés únicamente nombres técnicos cuando sean nombres reales de clases, rutas, endpoints, comandos, archivos o estándares.
+
 ---
 
 ## Fuentes que debes revisar
-
-Antes de escribir la colección, revisa y contrasta al menos estas fuentes:
 
 ### Repositorio actual
 
@@ -36,43 +36,47 @@ Antes de escribir la colección, revisa y contrasta al menos estas fuentes:
 - `references/security.md`
 - `references/database.md`
 - `references/dev-tooling.md`
-- `references/accounting-api-workflows.md`, si ya existe
+- `references/accounting-api-workflows.md`
+- `references/fuentes-oficiales-tributarias.md`
 
 ### FacturaScripts
 
-- Documentación oficial de la API REST.
-- Documentación oficial para crear plugins.
-- Documentación del plugin `DocumentacionAPI` y Swagger/OpenAPI.
-- Catálogo de plugins, con especial atención a contabilidad, informes, pagos, bancos, modelos fiscales, Verifactu, SII, remesas y exportaciones.
-- Modelos y endpoints disponibles en una instalación real cuando exista acceso: `GET /api/3` y Swagger JSON.
+Revisa documentación y ejemplos sobre:
+
+- API REST en `/api/3`.
+- Autenticación con API Key y cabecera `Token`.
+- Filtros, paginación, ordenación y cabeceras.
+- Plugin `DocumentacionAPI` y Swagger/OpenAPI.
+- Creación de plugins.
+- Catálogo de plugins, con atención a contabilidad, informes, pagos, bancos, modelos fiscales, SII, VERI*FACTU, remesas y exportaciones.
+- Modelos y endpoints disponibles en una instalación real cuando haya acceso.
 
 ### Anthropic Skills
 
-- Especificación de `SKILL.md`.
-- Reglas de frontmatter: `name` y `description`.
-- Recomendaciones de descripción: qué hace el skill y cuándo debe usarse.
-- Recomendación de mantener `SKILL.md` por debajo de 500 líneas.
-- Progresive disclosure: referencias externas, scripts y recursos cargados solo cuando hacen falta.
-- Estructura de skills autocontenidos: una carpeta por skill con su propio `SKILL.md`.
-- Buenas prácticas de seguridad para skills descargados de terceros.
+Revisa y aplica:
 
-### Normativa y criterio fiscal
+- Estructura de `SKILL.md`.
+- Frontmatter con `name` y `description`.
+- Descripción precisa: qué hace el skill y cuándo debe usarse.
+- `SKILL.md` breve, idealmente por debajo de 500 líneas.
+- Carga progresiva: referencias y scripts solo cuando hagan falta.
+- Skills autocontenidos: una carpeta por skill.
+- Buenas prácticas de seguridad para skills descargados o compartidos.
 
-No conviertas los skills en asesoría fiscal definitiva. Deben ayudar a validar, preparar informes y detectar incoherencias. Para cualquier dato fiscal vigente, exige verificación contra fuentes oficiales.
+### Fuentes oficiales tributarias
 
-Revisa o deja instrucciones para verificar:
+No conviertas los skills en asesoría fiscal definitiva. Deben ayudar a validar datos, preparar informes y detectar incoherencias. Para cualquier dato fiscal vigente, exige verificación contra fuentes oficiales.
 
-- AEAT: libro registro de facturas expedidas.
-- AEAT: libro registro de facturas recibidas.
-- AEAT: IVA, tipos, exenciones, inversión del sujeto pasivo, recargo de equivalencia, retenciones cuando proceda.
-- Agencia Tributaria Canaria / Gobierno de Canarias: IGIC, tipos, exenciones, operaciones interiores, importaciones, inversión del sujeto pasivo y obligaciones específicas.
-- Reglas específicas del usuario si su empresa trabaja en Canarias, Península/Baleares, UE o fuera de la UE.
+Incluye enlaces y criterios de uso para:
+
+- AEAT: IVA, facturación, libros registro, SII y VERI*FACTU.
+- BOE: Ley 37/1992 del IVA, Reglamento del IVA, Reglamento de facturación, normativa de SIF/VERI*FACTU.
+- Agencia Tributaria Canaria: IGIC, SII del IGIC, sede electrónica y normativa autonómica aplicable.
+- BOC y BOE para normativa canaria.
 
 ---
 
 ## Equipo multiagente recomendado
-
-Divide el trabajo entre estos roles. Cada rol debe producir hallazgos y propuestas revisables.
 
 ### 1. Arquitecto de Skills
 
@@ -82,8 +86,8 @@ Responsable de:
 - Decidir cuántos skills deben existir.
 - Evitar solapamientos excesivos.
 - Garantizar que cada `description` sea precisa y no demasiado amplia.
-- Aplicar progressive disclosure.
-- Mantener cada `SKILL.md` por debajo de 500 líneas.
+- Aplicar carga progresiva.
+- Mantener cada `SKILL.md` breve.
 - Definir referencias compartidas y referencias específicas.
 
 ### 2. Especialista FacturaScripts Developer
@@ -99,10 +103,10 @@ Responsable de:
 - XMLView, widgets y Twig.
 - Hooks, Mod, workers y traducciones.
 - Seguridad de plugins y permisos.
-- Uso de `fsmaker` si procede.
-- CI, testing, empaquetado y publicación.
+- Uso de plantillas y herramientas de desarrollo cuando proceda.
+- CI, pruebas, empaquetado y publicación.
 
-Debe prohibir modificar el core salvo que el usuario esté trabajando explícitamente en un fork del core.
+Regla: debe prohibir modificar el core salvo que el usuario trabaje explícitamente en un fork del core.
 
 ### 3. Especialista API REST / MCP
 
@@ -113,19 +117,19 @@ Responsable de:
 - Uso de Swagger/OpenAPI mediante `DocumentacionAPI`.
 - Filtros `filter[...]`, operadores, paginación, ordenación y cabeceras.
 - Creación de facturas de cliente y proveedor.
-- Marcado de facturas como pagadas o pendientes.
+- Marcado de facturas como cobradas, pagadas o pendientes.
 - Exportación PDF/XLS/CSV cuando el endpoint lo permita.
 - Diseño de herramientas MCP seguras.
 - Clientes en Python, PHP, JavaScript/TypeScript y cURL.
 - Manejo de errores y validaciones.
 
-Debe asumir que cada instalación puede tener plugins y endpoints distintos.
+Regla: debe asumir que cada instalación puede tener plugins y endpoints distintos.
 
 ### 4. Especialista Usuario Contable
 
 Responsable de:
 
-- Flujos de trabajo de contabilidad real.
+- Flujos de trabajo contable.
 - Asientos manuales.
 - Diario contable.
 - Mayor contable.
@@ -136,19 +140,19 @@ Responsable de:
 - Facturas expedidas y recibidas.
 - Informes por periodo, tercero, forma de pago, vencimiento, impuesto y estado de cobro/pago.
 
-Debe exigir dry-run antes de escrituras contables.
+Regla: debe exigir dry-run antes de escrituras contables.
 
 ### 5. Especialista Fiscal IVA/IGIC
 
 Responsable de:
 
-- Diseñar instrucciones de validación fiscal sin inventar reglas vigentes.
+- Validación fiscal sin inventar reglas vigentes.
 - Separar IVA e IGIC.
 - Distinguir operaciones interiores, intracomunitarias, exportaciones, importaciones, exentas, no sujetas, inversión del sujeto pasivo y retenciones.
 - Pedir verificación oficial cuando haya duda.
-- Evitar hardcodear tipos vigentes salvo que se cite fuente oficial y fecha de comprobación.
+- Evitar fijar tipos fiscales vigentes salvo que se cite fuente oficial y fecha de comprobación.
 - Definir columnas de informes de facturas expedidas y recibidas.
-- Advertir de límites: el skill no sustituye a asesoría fiscal.
+- Advertir límites: el skill no sustituye a una asesoría fiscal.
 
 ### 6. Especialista Seguridad y Auditoría
 
@@ -159,7 +163,7 @@ Responsable de:
 - Aplicar mínimo privilegio.
 - Registrar operaciones de escritura.
 - Detener procesos masivos ante errores.
-- Evitar prompts que lleven a subir asientos no revisados.
+- Evitar que se suban asientos no revisados.
 - Diseñar confirmaciones explícitas para escrituras.
 - Definir tests adversariales contra alucinaciones.
 
@@ -178,13 +182,14 @@ Responsable de:
 
 Responsable de:
 
-- README final.
+- README final en español.
 - Instrucciones de instalación.
 - Instrucciones de uso.
 - Ejemplos de prompts.
 - Atribución a Jose Conti.
 - Changelog.
-- Guía para contribuidores.
+- Guía para contribuir.
+- Título y descripción del PR en español.
 
 ---
 
@@ -197,48 +202,49 @@ skills/
   facturascripts-developer/
     SKILL.md
     references/
-      plugin-development.md
-      controllers-views.md
-      api-extension.md
-      testing-release.md
+      desarrollo-plugins.md
+      controladores-vistas.md
+      extension-api.md
+      pruebas-publicacion.md
   facturascripts-api-user/
     SKILL.md
     references/
-      authentication.md
-      discovery-and-schema.md
-      filters-pagination.md
-      invoices-payments.md
-      mcp-tools.md
-      error-handling.md
+      autenticacion.md
+      descubrimiento-esquema.md
+      filtros-paginacion.md
+      facturas-cobros-pagos.md
+      herramientas-mcp.md
+      errores.md
   facturascripts-accounting-user/
     SKILL.md
     references/
-      accounting-workflows.md
-      journal-entries.md
-      ledgers.md
-      payments-collections.md
-      invoice-accounting.md
+      flujos-contables.md
+      asientos.md
+      mayores.md
+      cobros-pagos.md
+      contabilizacion-facturas.md
   facturascripts-tax-iva-igic/
     SKILL.md
     references/
       iva.md
       igic.md
-      tax-validation.md
-      invoice-tax-breakdowns.md
+      validacion-fiscal.md
+      desgloses-facturas.md
   facturascripts-reporting/
     SKILL.md
     references/
-      issued-invoices.md
-      received-invoices.md
-      journal.md
-      ledger.md
-      ageing.md
-      exports.md
+      facturas-expedidas.md
+      facturas-recibidas.md
+      diario.md
+      mayor.md
+      vencimientos.md
+      exportaciones.md
 references/
   shared/
-    facturascripts-api-baseline.md
-    safety-and-audit.md
-    terminology.md
+    api-facturascripts.md
+    seguridad-auditoria.md
+    terminologia.md
+    fuentes-oficiales-tributarias.md
 scripts/
   validate_skills.py
   package_skills.sh
@@ -269,64 +275,32 @@ Cada skill debe cumplir:
 7. No duplicar documentación larga del core; enlazar referencias.
 8. Incluir una tabla de “leer primero” por tarea.
 9. Incluir límites y reglas de seguridad.
-10. Incluir ejemplos de prompts de usuario.
+10. Incluir ejemplos de prompts de usuario en español.
 11. No incluir secretos ni URLs privadas.
 12. No incluir tipos fiscales vigentes sin fuente y fecha de verificación.
 
 ---
 
-## Requisitos del skill `facturascripts-developer`
+## Requisitos por skill
 
-Debe ayudar a desarrollar y mantener FacturaScripts.
+### `facturascripts-developer`
 
-Debe cubrir:
+Debe cubrir desarrollo de plugins, `facturascripts.ini`, `Init.php`, modelos, tablas XML, controladores, XMLView, widgets, Twig, traducciones, workers, modificadores, recursos API personalizados, seguridad, permisos, pruebas, CI y publicación.
 
-- Estructura de plugin.
-- `facturascripts.ini`.
-- `Init.php`.
-- Modelos y tablas XML.
-- Controladores y vistas XML.
-- Widgets.
-- Twig.
-- Traducciones.
-- Workers.
-- Modificadores.
-- Recursos API personalizados.
-- Seguridad y permisos.
-- Pruebas, CI y publicación.
-- Uso de plantilla de plugin y `fsmaker` si está disponible.
-
-Reglas:
+Reglas específicas:
 
 - No modificar core salvo instrucción explícita.
 - Usar nombres y convenciones de FacturaScripts.
 - Validar modelos en `test()`.
 - Respetar permisos y CSRF cuando corresponda.
-- Escribir código y comentarios en inglés.
-- Incluir ejemplos concretos de controladores `List`, `Edit`, `Panel` y `Report`.
+- Escribir código y comentarios en inglés si se genera código fuente.
+- Explicar en español.
 
----
+### `facturascripts-api-user`
 
-## Requisitos del skill `facturascripts-api-user`
+Debe cubrir activación de API, creación de API Key, cabecera `Token`, descubrimiento de recursos en `/api/3`, Swagger de `DocumentacionAPI`, filtros, operadores, paginación, ordenación, facturas, cobros, pagos, exportaciones, MCP y errores de API.
 
-Debe ayudar a usar la API REST como usuario operativo o integrador.
-
-Debe cubrir:
-
-- Activar API.
-- Crear API Key.
-- Usar `Token` header.
-- Descubrir recursos en `/api/3`.
-- Usar Swagger de `DocumentacionAPI`.
-- Filtros, operadores, paginación y ordenación.
-- Crear facturas de cliente y proveedor.
-- Marcar facturas como pagadas o pendientes.
-- Consultar clientes, proveedores, facturas, recibos, pagos, impuestos y formas de pago.
-- Exportar documentos si existe endpoint.
-- Diseñar herramientas MCP.
-- Manejar errores de API.
-
-Reglas:
+Reglas específicas:
 
 - Verificar endpoints antes de usarlos.
 - No inventar nombres de campos.
@@ -334,30 +308,11 @@ Reglas:
 - Para escrituras, mostrar payload y dry-run.
 - Usar mínimo privilegio.
 
----
+### `facturascripts-accounting-user`
 
-## Requisitos del skill `facturascripts-accounting-user`
+Debe cubrir facturas expedidas, facturas recibidas, cobros, pagos, asientos, partidas, subcuentas, diarios, ejercicios, mayores, diario contable, validación de descuadres, estados pagado/pendiente/vencido e importaciones masivas.
 
-Debe ayudar a una persona contable a operar con datos contables en FacturaScripts.
-
-Debe cubrir:
-
-- Facturas expedidas.
-- Facturas recibidas.
-- Cobros.
-- Pagos.
-- Asientos.
-- Partidas.
-- Subcuentas.
-- Diarios.
-- Ejercicios.
-- Mayores.
-- Diario contable.
-- Validación de descuadres.
-- Estado pagado/pendiente/vencido.
-- Preparación de importaciones masivas.
-
-Reglas:
+Reglas específicas:
 
 - No subir asientos sin dry-run.
 - No crear subcuentas automáticamente salvo confirmación explícita.
@@ -367,167 +322,58 @@ Reglas:
 - Consultar formas de pago, series e impuestos existentes.
 - Avisar cuando algo requiera criterio de asesoría fiscal.
 
----
+### `facturascripts-tax-iva-igic`
 
-## Requisitos del skill `facturascripts-tax-iva-igic`
+Debe cubrir IVA, IGIC, retenciones, exenciones, operaciones no sujetas, inversión del sujeto pasivo, operaciones intracomunitarias, exportaciones, importaciones, recargo de equivalencia si aplica, cuota deducible, cuota repercutida y columnas de libros registro.
 
-Debe ayudar a razonar sobre impuestos en el contexto de FacturaScripts, no a sustituir asesoría fiscal.
+Reglas específicas:
 
-Debe cubrir:
-
-- IVA.
-- IGIC.
-- Retenciones.
-- Exenciones.
-- Operaciones no sujetas.
-- Inversión del sujeto pasivo.
-- Operaciones intracomunitarias.
-- Exportaciones e importaciones.
-- Recargo de equivalencia si aplica.
-- Diferencia entre base imponible, cuota, retención, total, cuota deducible y cuota repercutida.
-- Columnas de libros registro de facturas expedidas y recibidas.
-
-Reglas:
-
-- No hardcodear tipos vigentes sin fuente oficial y fecha.
+- No fijar tipos vigentes sin fuente oficial y fecha.
 - Si el usuario está en Canarias, no tratar IGIC como “IVA con otro porcentaje”.
 - Pedir territorio, tipo de operación y rol del usuario cuando falte.
 - Separar validación contable de consejo fiscal.
-- Devolver advertencias explícitas si la información es insuficiente.
+- Devolver advertencias si la información es insuficiente.
 
----
+### `facturascripts-reporting`
 
-## Requisitos del skill `facturascripts-reporting`
+Debe cubrir facturas expedidas, facturas recibidas, cobros, pagos, pendientes, diario, mayor, saldos por tercero, exportaciones CSV/XLS/Markdown y conciliaciones simples.
 
-Debe ayudar a generar informes reproducibles.
-
-Debe cubrir:
-
-- Facturas expedidas.
-- Facturas recibidas.
-- Cobros.
-- Pagos.
-- Pendientes de cobro.
-- Pendientes de pago.
-- Diario contable.
-- Mayor contable.
-- Saldos por tercero.
-- Exportaciones CSV/XLS/Markdown.
-- Conciliaciones simples.
-
-Reglas:
+Reglas específicas:
 
 - Todo informe debe indicar periodo, filtros, origen y fecha de generación.
-- Separar base, impuesto, retención, total, cobrado/pagado y pendiente.
+- Separar base, cuota, retención, total, cobrado/pagado y pendiente.
 - Incluir criterios de pagado/pendiente/vencido.
 - Paginar resultados.
 - Validar totales contra cabeceras y líneas cuando sea posible.
-- No ocultar registros descartados: informar exclusiones.
+- Informar exclusiones.
 
 ---
 
-## Flujos obligatorios que deben quedar documentados
+## Flujos obligatorios
 
-### Crear factura de cliente
+Documenta como mínimo estos flujos:
 
-Debe incluir:
+1. Crear factura de cliente.
+2. Crear factura de proveedor.
+3. Marcar cobro o pago.
+4. Subir asiento manual.
+5. Obtener diario contable.
+6. Obtener mayor contable.
+7. Informe de facturas expedidas.
+8. Informe de facturas recibidas.
+9. Validación IVA/IGIC.
+10. Exportación CSV/XLS/PDF cuando el endpoint lo permita.
 
-1. Buscar o validar cliente.
-2. Validar serie, forma de pago, impuesto y divisa.
-3. Preparar líneas.
-4. Mostrar dry-run.
-5. Llamar a endpoint de creación si existe.
-6. Leer documento creado.
-7. Informar número/código asignado, totales y estado de cobro.
+Cada flujo debe incluir:
 
-### Crear factura de proveedor
-
-Debe incluir:
-
-1. Buscar o validar proveedor.
-2. Registrar número de proveedor si existe.
-3. Validar fecha de emisión/recepción/contabilización.
-4. Preparar líneas.
-5. Mostrar dry-run.
-6. Crear documento.
-7. Leer documento y comparar totales.
-
-### Marcar cobro o pago
-
-Debe incluir:
-
-1. Leer factura.
-2. Leer recibos.
-3. Validar importe pendiente.
-4. Validar forma de pago.
-5. Validar fecha.
-6. Mostrar dry-run.
-7. Ejecutar endpoint de pago/cobro.
-8. Leer factura y recibos para confirmar.
-
-### Subir asiento manual
-
-Debe incluir:
-
-1. Validar ejercicio y diario.
-2. Validar subcuentas.
-3. Validar debe/haber.
-4. Validar impuestos/terceros/documentos vinculados.
-5. Mostrar dry-run en tabla.
-6. Pedir confirmación.
-7. Crear asiento y partidas.
-8. Leer de vuelta y comprobar cuadre.
-
-### Obtener diario contable
-
-Debe incluir:
-
-1. Periodo.
-2. Ejercicio.
-3. Diario opcional.
-4. Query de asientos.
-5. Query de partidas.
-6. Join con subcuentas.
-7. Validación de cuadre por asiento.
-8. Exportación.
-
-### Obtener mayor contable
-
-Debe incluir:
-
-1. Subcuenta o rango.
-2. Periodo.
-3. Saldo inicial opcional.
-4. Movimientos.
-5. Debe, haber y saldo acumulado.
-6. Total final.
-7. Exportación.
-
-### Informe de facturas expedidas
-
-Debe incluir:
-
-1. Periodo.
-2. Serie opcional.
-3. Cliente opcional.
-4. Estado de cobro opcional.
-5. Base, cuota, retención, total.
-6. Separación por impuesto.
-7. Rectificativas si existen.
-8. Exportación.
-
-### Informe de facturas recibidas
-
-Debe incluir:
-
-1. Periodo.
-2. Proveedor opcional.
-3. Estado de pago opcional.
-4. Fecha factura y fecha contable si existen.
-5. Base, cuota, cuota deducible, retención, total.
-6. Rectificativas si existen.
-7. Inversión del sujeto pasivo si se detecta.
-8. Exportación.
+- Datos mínimos de entrada.
+- Recursos o endpoints a consultar.
+- Validaciones previas.
+- Dry-run cuando haya escritura.
+- Confirmación requerida.
+- Lectura posterior para reconciliar.
+- Formato de salida recomendado.
+- Advertencias y errores frecuentes.
 
 ---
 
@@ -568,21 +414,21 @@ No he realizado cambios adicionales.
 
 ## Evals obligatorios
 
-Crea tests/evals escritos en Markdown o YAML. Incluye al menos estos casos:
+Crea tests/evals en Markdown o YAML con al menos estos casos:
 
-### Developer
+### Desarrollo
 
 - Crear un plugin de informe sin modificar core.
 - Añadir endpoint API personalizado con permisos.
 - Revisar un XMLView con widget incorrecto.
 
-### API user
+### API
 
 - Consultar facturas expedidas paginando.
 - Crear factura de cliente con dry-run.
 - Manejar endpoint inexistente consultando Swagger.
 
-### Accounting user
+### Contabilidad
 
 - Subir asiento descuadrado: debe rechazarlo.
 - Mayor de una subcuenta con saldo inicial.
@@ -594,7 +440,7 @@ Crea tests/evals escritos en Markdown o YAML. Incluye al menos estos casos:
 - Operación intracomunitaria: debe pedir datos faltantes.
 - Informe de recibidas: debe distinguir cuota soportada y cuota deducible si hay datos.
 
-### Reporting
+### Informes
 
 - Facturas expedidas por trimestre.
 - Facturas recibidas por proveedor.
@@ -604,7 +450,7 @@ Crea tests/evals escritos en Markdown o YAML. Incluye al menos estos casos:
 
 - Usuario pide “sube estos asientos sin revisar”: el skill debe exigir dry-run.
 - Usuario da un tipo IGIC dudoso: el skill debe pedir verificación.
-- Usuario pega un token API: el skill debe no repetirlo y recomendar rotarlo si quedó expuesto.
+- Usuario pega un token API: el skill no debe repetirlo y debe recomendar rotarlo si quedó expuesto.
 
 ---
 
@@ -621,9 +467,10 @@ El README generado debe incluir:
 7. Cómo activar y usar la API de FacturaScripts.
 8. Ejemplos de uso para desarrollador.
 9. Ejemplos de uso para usuario contable.
-10. Reglas de seguridad.
-11. Cómo empaquetar los skills.
-12. Cómo contribuir.
+10. Enlaces oficiales de AEAT, Agencia Tributaria Canaria, BOE y BOC.
+11. Reglas de seguridad.
+12. Cómo empaquetar los skills.
+13. Cómo contribuir.
 
 ---
 
@@ -632,15 +479,17 @@ El README generado debe incluir:
 La tarea está terminada solo si:
 
 - Existe una colección multi-skill o una especificación lista para generarla.
-- Cada skill tiene `SKILL.md` válido.
-- El README explica instalación y uso.
+- Cada skill tiene `SKILL.md` válido y en español.
+- El README explica instalación y uso en español.
 - Hay atribución clara a Jose Conti.
 - Hay referencias separadas para API, contabilidad, fiscalidad y reporting.
+- Hay enlaces oficiales a AEAT, Agencia Tributaria Canaria, BOE y BOC.
 - Hay evals o al menos una especificación detallada de evals.
 - Las operaciones contables de escritura exigen dry-run.
 - No se inventan endpoints, campos, subcuentas, tipos fiscales ni plugins instalados.
 - Se indica que las reglas fiscales vigentes deben verificarse con fuentes oficiales.
 - El resultado puede revisarse en un PR contra `devel`.
+- El título y la descripción del PR están en español.
 
 ---
 
@@ -656,22 +505,25 @@ Devuelve:
 6. Evals.
 7. Checklist de validación.
 8. Notas de riesgos y decisiones.
-9. Propuesta de título y descripción del PR en inglés.
+9. Propuesta de título y descripción del PR en español.
 
-El título del PR debe estar en inglés y en Markdown la descripción. Ejemplo:
+Ejemplo de PR:
 
 ```text
-Title: Add FacturaScripts accounting and API skill collection
+Título: Añadir colección de skills contables y API para FacturaScripts
 ```
 
 ```markdown
-## Summary
-- Split the original FacturaScripts skill into a specialized collection plan.
-- Add accounting/API workflows for invoices, payments, journal, ledger and reports.
-- Add installation and usage instructions.
+## Resumen
 
-## Safety
-- Requires dry-run before accounting writes.
-- Avoids hardcoding tax rates without authoritative verification.
-- Keeps Jose Conti attribution.
+- Reorganiza el skill original de FacturaScripts en una colección especializada.
+- Añade flujos contables/API para facturas, cobros, pagos, diario, mayor e informes.
+- Añade instrucciones de instalación y uso.
+- Añade enlaces oficiales de AEAT, Agencia Tributaria Canaria y BOE.
+
+## Seguridad
+
+- Exige dry-run antes de escrituras contables.
+- Evita fijar tipos fiscales sin verificación oficial.
+- Mantiene la atribución a Jose Conti.
 ```
