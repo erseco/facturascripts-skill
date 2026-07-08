@@ -1,6 +1,5 @@
 ---
 name: facturascripts
-_description: deprecated-field-do-not-use
 description: >
   Coordinates FacturaScripts expertise for plugin development, REST API usage, accounting workflows, IVA/IGIC reasoning,
   invoices, payments, collections, journal entries, ledgers, reports, and MCP/API integrations. Use when the user mentions
