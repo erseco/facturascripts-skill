@@ -1,206 +1,73 @@
 ---
 name: facturascripts
+_description: deprecated-field-do-not-use
 description: >
-  Skill completo para FacturaScripts 2025, el ERP open-source en PHP. Usa este skill SIEMPRE que el usuario
-  mencione FacturaScripts, facturascripts, plugins de FacturaScripts, API de FacturaScripts, ERP FacturaScripts,
-  o cualquier tarea relacionada con crear, modificar, depurar o documentar codigo para FacturaScripts.
-  Tambien cuando mencione modelos como FacturaCliente, AlbaranCliente, Producto, Cliente, Proveedor,
-  o controladores como ListController, EditController, PanelController. Tambien si habla de conectar
-  sistemas externos con la API REST de FacturaScripts, crear un MCP para FacturaScripts, o automatizar
-  procesos de facturacion, contabilidad, stock o compras/ventas en este ERP.
+  Coordinates FacturaScripts expertise for plugin development, REST API usage, accounting workflows, IVA/IGIC reasoning,
+  invoices, payments, collections, journal entries, ledgers, reports, and MCP/API integrations. Use when the user mentions
+  FacturaScripts, FacturaScripts plugins, FacturaScripts API, accounting entries, FacturaCliente, FacturaProveedor,
+  ReciboCliente, ReciboProveedor, Asiento, Partida, Subcuenta, diario, mayor, IVA, IGIC, facturas expedidas or facturas recibidas.
 ---
 
-# FacturaScripts 2025 - Skill Completo
+# FacturaScripts Skill Router
 
-Este skill contiene la documentacion exhaustiva de FacturaScripts 2025.81, un ERP open-source en PHP
-para gestion empresarial: facturacion, contabilidad, stock, compras, ventas, CRM y mas.
+This root skill is a compatibility entry point for the original single-skill layout. New work should prefer the specialized skills proposed in `PROMPT_GENERADOR_SKILLS.md` and the workflows in `references/accounting-api-workflows.md`.
 
-## Cuando usar cada referencia
+The repository is an evolution of the original FacturaScripts skill by Jose Conti. Keep that attribution visible in documentation and derivative files.
 
-Antes de escribir codigo, lee la referencia relevante segun la tarea:
+## Skill selection
 
-| Tarea | Referencia a leer |
-|-------|-------------------|
-| Entender como funciona FacturaScripts | `references/architecture.md` (2374 lineas) |
-| Crear un plugin nuevo | `references/plugins.md` (2089 lineas) |
-| Trabajar con modelos (datos, CRUD) | `references/models.md` (1135 lineas) |
-| Crear o modificar controladores | `references/controllers.md` (1721 lineas) + `references/controllers-advanced.md` (713 lineas) |
-| Crear o modificar vistas/formularios | `references/views-widgets.md` (2787 lineas) |
-| Conectar con la API REST | `references/api.md` (2811 lineas) |
-| Trabajar con base de datos | `references/database.md` (2649 lineas) |
-| Exportacion, PDF, email, contabilidad | `references/libraries.md` (944 lineas) |
-| Usuarios, roles, permisos, seguridad | `references/security.md` (1840 lineas) |
-| Traducciones e internacionalizacion | `references/translations.md` (1181 lineas) |
-| Consulta rapida de metodos y clases | `references/quick-reference.md` (454 lineas) |
-| Montar entorno, probar plugins/PRs, automatizar releases | `references/dev-tooling.md` |
+Use the smallest relevant scope before loading long references:
 
-Para la mayoria de tareas de desarrollo de plugins, lee `references/plugins.md` primero
-y luego las referencias especificas que necesites.
+| User task | Read first |
+| --- | --- |
+| Build or refactor FacturaScripts plugins | `references/plugins.md`, then `references/controllers.md`, `references/models.md`, `references/views-widgets.md` |
+| Create API clients, MCP tools or external integrations | `references/api.md`, then `references/accounting-api-workflows.md` |
+| Work as an accounting user through the API | `references/accounting-api-workflows.md`, then `references/models.md` for entity names |
+| Upload invoices, collect payments or mark supplier payments | `references/accounting-api-workflows.md`, `references/api.md` |
+| Generate issued/received invoice reports | `references/accounting-api-workflows.md`, then API resource discovery or Swagger JSON |
+| Consult journal, ledger, accounts and entries | `references/accounting-api-workflows.md`, `references/libraries.md`, `references/models.md` |
+| Reason about IVA, IGIC, retentions or reverse-charge cases | `references/accounting-api-workflows.md`; verify current tax rules with authoritative sources when needed |
+| Security, roles or API key permissions | `references/security.md`, `references/api.md` |
+| Development tooling, CI, previews and releases | `references/dev-tooling.md` |
 
-Si la tarea involucra crear un MCP Server para conectar con FacturaScripts, lee
-`references/api.md` que incluye una seccion completa sobre como crear un MCP Server
-con herramientas basadas en la API REST.
+## Operating principles
 
-Si la tarea involucra **arrancar un proyecto de plugin**, **montar un entorno de
-desarrollo o pruebas**, **dar a un revisor una demo en vivo de un PR**, **probar un
-plugin definiendo un `blueprint.json`** o **automatizar el release/publicacion en la
-forja**, lee `references/dev-tooling.md`. Documenta el ecosistema de herramientas y
-hay archivos listos para copiar en `templates/` (workflows de CI/preview/release,
-`blueprint.json` y script de renombrado).
+1. Do not assume the user's FacturaScripts instance has every endpoint enabled. Discover resources at `/api/3` or through the `DocumentacionAPI` Swagger JSON when possible.
+2. Treat accounting writes as high-risk operations. For creates, updates, payments and journal entries, produce a dry-run summary and ask for explicit confirmation unless the user already requested execution in an unambiguous way.
+3. Never invent account codes, tax rates, fiscal periods, customer IDs, supplier IDs or payment methods. Query the instance or ask the user.
+4. For IVA and IGIC, separate factual accounting mechanics from tax/legal advice. Validate rates, exemptions, reverse-charge treatment, recargo de equivalencia and Canary-specific IGIC rules against current authoritative sources.
+5. For reports, state the data source, filters, period, currency, tax regime and whether totals are pre-tax, tax, withholding, paid, pending or gross.
+6. For API calls, prefer form URL encoded payloads for FacturaScripts create/update operations unless the endpoint documentation or Swagger schema says otherwise.
+7. For model CRUD, verify field names from the model schema before composing filters or payloads.
+8. For code, follow the style already used by FacturaScripts and the target plugin. Do not modify core files; use plugins, extensions, controllers, models, XMLView, workers and API endpoints.
 
-## Entorno de desarrollo, pruebas y publicacion
+## FacturaScripts API baseline
 
-Ademas de la documentacion del core, este skill cubre el ecosistema de herramientas
-para el ciclo de vida completo de un plugin (detalle en `references/dev-tooling.md`):
+- Base API path: `/api/3`.
+- Authentication: API key in the `Token` header, or the authentication mode documented by the target instance.
+- Common query controls: `limit`, `offset`, `filter[field]`, operator suffixes such as `_gt`, `_gte`, `_lt`, `_lte`, `_neq`, `_like`, and `sort[field]=ASC|DESC`.
+- Common document endpoints include `crearFacturaCliente`, `crearFacturaProveedor`, `pagarFacturaCliente/{id}` and `pagarFacturaProveedor/{id}` when available.
+- Export endpoints can provide PDF/XLS/CSV for supported documents, for example `exportarFacturaCliente/{id}?type=CSV` when enabled.
 
-| Herramienta | Repositorio | Para que |
-|-------------|-------------|----------|
-| Imagen Docker base | [erseco/alpine-facturascripts](https://github.com/erseco/alpine-facturascripts) | Imagen ligera (Alpine + PHP 8.4) con instalacion desatendida; base del entorno dev y CI |
-| Plantilla de plugin | [erseco/facturascripts-plugin-template](https://github.com/erseco/facturascripts-plugin-template) | Esqueleto con Docker, tests, lint y workflows de CI/release |
-| Playground (WASM) | [erseco/facturascripts-playground](https://github.com/erseco/facturascripts-playground) | FacturaScripts en el navegador, configurable con `blueprint.json` |
-| Action PR Preview | [erseco/action-facturascripts-playground-pr-preview](https://github.com/erseco/action-facturascripts-playground-pr-preview) | Comentario en el PR con enlace para probar la rama en el Playground |
-| Action Publicar Forja | [erseco/action-facturascripts-publicar-forja](https://github.com/erseco/action-facturascripts-publicar-forja) | Sube el ZIP como build a la forja oficial tras una release |
+## Recommended specialized collection
 
-Flujo recomendado: crear repo desde la plantilla -> desarrollar en local con
-`make up` -> calidad con `make lint/test` (y CI) -> PR con preview automatico en el
-Playground -> tag numerico que dispara ZIP + GitHub Release + publicacion en la forja.
+The target collection should be generated or maintained as separate folders, each with its own `SKILL.md` and narrowly scoped description:
 
-## Estructura de FacturaScripts 2025
+1. `facturascripts-developer`: plugin, API, MCP, CI and release development.
+2. `facturascripts-api-user`: safe operational usage of the REST API as a user.
+3. `facturascripts-accounting-user`: accounting workflows: invoices, entries, payments, collections, reports, ledgers and journal.
+4. `facturascripts-tax-iva-igic`: Spanish IVA and Canary IGIC reasoning for data validation and report interpretation.
+5. `facturascripts-reporting`: recurring reports for issued/received invoices, ageing, outstanding payments, ledger and journal exports.
 
-```
-facturascripts/
-  index.php                  # Punto de entrada
-  Core/
-    Kernel.php               # Nucleo: rutas, controladores, ciclo de vida
-    Plugins.php              # Gestor de plugins
-    Session.php              # Sesion y autenticacion
-    Request.php              # Datos HTTP de entrada
-    Response.php             # Respuesta HTTP
-    Cache.php                # Cache basada en archivos
-    Logger.php               # Sistema de logging
-    Tools.php                # Utilidades (fechas, numeros, archivos)
-    Translator.php           # Sistema de traducciones
-    Html.php                 # Motor Twig con funciones custom
-    Http.php                 # Cliente HTTP (cURL)
-    DbQuery.php              # Query builder fluent
-    Where.php                # Constructor de clausulas WHERE
-    WorkQueue.php            # Cola de trabajos asincronos
-    Validator.php            # Validacion de datos
-    Base/
-      Controller.php         # Clase base de controladores
-      DataBase.php           # Abstraccion BD (MySQL/PostgreSQL)
-    Controller/              # 125+ controladores del core
-    Model/                   # 87+ modelos de dominio
-      Base/                  # Clases base (ModelCore, ModelClass, traits)
-      Join/                  # Modelos virtuales (JOIN)
-    Lib/
-      ExtendedController/    # Controladores extendidos (List, Edit, Panel)
-      Widget/                # 36 tipos de widgets
-      API/                   # Sistema API REST
-      ListFilter/            # 7 tipos de filtros
-      AjaxForms/             # Formularios AJAX
-      Export/                # Exportacion (CSV, XLS, PDF)
-      PDF/                   # Generacion PDF
-      Email/                 # Envio de emails
-      Accounting/            # Contabilidad
-    View/                    # Plantillas Twig
-    XMLView/                 # 133 definiciones de vistas XML
-    Table/                   # Esquemas de tablas XML
-    Translation/             # Archivos de traduccion JSON
-    Mod/                     # Sistema de modificadores (hooks)
-    Worker/                  # Workers para cola de trabajos
-  Plugins/                   # Directorio de plugins
-  MyFiles/                   # Archivos generados, cache, uploads
-```
+Use `PROMPT_GENERADOR_SKILLS.md` to generate the full multi-agent version of this collection.
 
-## Conceptos fundamentales
+## Verification checklist
 
-### Ciclo de vida de una peticion
+Before returning a final answer or committing generated files:
 
-```
-1. index.php carga autoloader Composer
-2. CrashReport::init() - manejo de errores fatales
-3. Kernel::init() - constantes, idioma, workers, plugins
-4. Plugins::init() - ejecuta Init.php de cada plugin activo
-5. Kernel::run($url)
-   a. Sanitiza URL
-   b. Carga rutas (core + MyFiles/routes.json)
-   c. Busca controlador que coincida con URL
-   d. Instancia controlador
-   e. Ejecuta controlador->run($response, $request)
-6. WorkQueue::run() - procesa trabajos pendientes
-7. Telemetry::update()
-8. Logger::save() - persiste logs
-9. DataBase::close()
-```
-
-### Ciclo de vida de un controlador
-
-```
-1. __construct() - configura getPageData()
-2. run($response, $request)
-   a. checkSecurity() - verifica login y permisos
-   b. execPreviousAction($action) - procesa acciones del usuario
-   c. loadData() - carga datos del modelo
-   d. execAfterAction($action) - post-procesamiento
-   e. Renderiza vista Twig
-```
-
-### Patron MVC
-
-- **Modelo**: Clases en `Core/Model/` que extienden `ModelClass`. Cada modelo mapea una tabla.
-- **Vista**: Definida en XML (`Core/XMLView/`) y renderizada con Twig (`Core/View/`). Los widgets controlan la UI.
-- **Controlador**: Clases en `Core/Controller/` que extienden `BaseController` o sus variantes extendidas.
-
-### Tipos de controlador
-
-| Tipo | Uso | Clase |
-|------|-----|-------|
-| ListController | Listados con filtros, ordenacion, paginacion | `Lib\ExtendedController\ListController` |
-| EditController | Formulario de edicion de un registro | `Lib\ExtendedController\EditController` |
-| PanelController | Formulario con pestanas (tabs) | `Lib\ExtendedController\PanelController` |
-| ReportController | Informes con filtros | `Lib\ExtendedController\ReportController` |
-
-### Estructura minima de un plugin
-
-```
-Plugins/MiPlugin/
-  facturascripts.ini         # Metadatos del plugin
-  Init.php                   # Hooks de inicializacion
-  Controller/
-    ListMiModelo.php         # Controladores
-    EditMiModelo.php
-  Model/
-    MiModelo.php             # Modelos
-  Table/
-    mi_tabla.xml             # Esquema de tabla
-  XMLView/
-    ListMiModelo.xml         # Definicion de vista lista
-    EditMiModelo.xml         # Definicion de vista edicion
-  Translation/
-    es_ES.json               # Traducciones
-```
-
-### API REST
-
-FacturaScripts incluye una API REST completa accesible en `/api/3/`. Soporta:
-- Autenticacion por API Key (header `Token`) o login/password
-- Operaciones CRUD sobre cualquier modelo
-- Filtros con operadores: `=`, `gt`, `gte`, `lt`, `lte`, `neq`, `like`, `null`, `notnull`
-- Paginacion con `offset` y `limit`
-- Recursos personalizados
-
-Para detalles completos de cada area, consulta las referencias especificas en `references/`.
-
-## Reglas de desarrollo
-
-1. Los modelos SIEMPRE deben implementar `tableName()`, `primaryColumn()` y `clear()`.
-2. La validacion va en `test()`, que se ejecuta antes de `save()`.
-3. Los nombres de tabla usan snake_case en plural (ej: `facturas_cli`, `productos`).
-4. Los controladores List llevan prefijo `List` y los Edit llevan prefijo `Edit`.
-5. Las vistas XML deben coincidir en nombre con el controlador (ListProducto.xml para ListProducto.php).
-6. Usa `Tools::lang()->trans('clave')` para textos traducibles.
-7. Los plugins NO deben modificar archivos del core. Usa Mod (modificadores) para extender comportamiento.
-8. Las migraciones de BD se definen en archivos XML en `Table/`.
-9. Para relaciones entre modelos, usa metodos `get*()` (ej: `getLines()`, `getCustomer()`).
-10. El sistema de permisos se basa en Roles con acceso por pagina (controlador).
+- The relevant skill description includes what it does and when it should be used.
+- `SKILL.md` stays concise and points to reference files instead of embedding everything.
+- Examples are concrete and executable.
+- Accounting operations include dry-run, validation and rollback/undo notes where feasible.
+- Installation and usage instructions are present in `README.md`.
+- Jose Conti attribution is preserved.
