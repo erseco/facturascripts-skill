@@ -1,281 +1,240 @@
-# FacturaScripts 2025 - Skill Completo
+# Colección de Skills para FacturaScripts
 
-Skill de referencia exhaustiva para **FacturaScripts 2025.81**, el ERP open-source en PHP para gestion empresarial. Este skill permite a cualquier LLM generar codigo correcto para FacturaScripts sin necesidad de consultar documentacion externa.
+Colección de skills en español para trabajar con FacturaScripts desde dos perspectivas complementarias:
 
-Desarrollado por **Jose Conti** - [plugins.joseconti.com](https://plugins.joseconti.com)
+- **Desarrollo**: plugins, modelos, controladores, XMLView, API REST, MCP, pruebas, CI y publicación.
+- **Uso contable y operativo**: facturación, cobros, pagos, asientos, diario, mayores, informes de facturas expedidas y recibidas, IVA e IGIC.
 
----
+Este repositorio es una **evolución del skill original de Jose Conti** para FacturaScripts, publicado originalmente en `joseconti/facturascripts-skill`, y mantiene esa atribución como base del trabajo. La rama actual reorganiza el material para evolucionar desde un único skill generalista hacia una colección de skills especializados con carga progresiva.
 
-## Para que sirve este skill
+## Idioma y público objetivo
 
-Este skill cubre la totalidad de FacturaScripts 2025 y permite:
+El público principal es hispanohablante y, en especial, usuarios y desarrolladores que trabajan con contabilidad española, IVA e IGIC. Por eso:
 
-- Crear plugins completos para FacturaScripts (modelos, controladores, vistas, traducciones, assets).
-- Conectar sistemas externos con la API REST de FacturaScripts.
-- Crear un MCP Server (Model Context Protocol) con herramientas para interactuar con FacturaScripts desde un LLM.
-- Depurar y modificar codigo existente de plugins.
-- Entender la arquitectura interna del ERP para tomar decisiones de desarrollo informadas.
-- Trabajar con la contabilidad, facturacion, stock, compras, ventas y CRM del sistema.
-- Montar un entorno de desarrollo y pruebas reproducible, probar plugins y PRs en el
-  navegador (FacturaScripts Playground con WebAssembly) y automatizar el release y la
-  publicacion en la forja oficial.
+- La documentación operativa debe estar en español.
+- Los nombres técnicos se mantienen cuando son nombres reales de FacturaScripts, rutas, clases, endpoints o archivos: `SKILL.md`, `XMLView`, `FacturaCliente`, `/api/3`, `Token`.
+- Los ejemplos de uso deben estar en español.
+- El código, cuando se genere para plugins, puede mantenerse en inglés si el proyecto lo requiere, pero la explicación al usuario debe estar en español.
 
----
+## Qué cambia en esta evolución
 
-## Que contiene
+- El `SKILL.md` raíz pasa a funcionar como **router de compatibilidad**.
+- Se añade una referencia específica para **flujos contables y API**: `references/accounting-api-workflows.md`.
+- Se añade una referencia de **fuentes oficiales tributarias**: `references/fuentes-oficiales-tributarias.md`.
+- Se añade un prompt maestro en español para que una IA multiagente genere una colección completa de skills: `PROMPT_GENERADOR_SKILLS.md`.
+- Se documentan instrucciones de instalación y uso.
+- Se separan claramente los usos de desarrollador y de usuario contable.
 
-El skill se compone de un archivo principal `SKILL.md` que actua como punto de entrada y 12 archivos de referencia detallados en `references/`. En total, mas de **21,500 lineas de documentacion tecnica** (676 KB) generadas directamente desde el codigo fuente de FacturaScripts CORE-2025.81.
+## Organización recomendada de la colección
 
-### Estructura de archivos
+La colección final debería organizarse en skills pequeños, autocontenidos y especializados:
 
+| Skill | Uso principal |
+| --- | --- |
+| `facturascripts-developer` | Crear, modificar, probar y publicar plugins de FacturaScripts. |
+| `facturascripts-api-user` | Usar la API REST de FacturaScripts de forma segura como usuario operativo. |
+| `facturascripts-accounting-user` | Contabilizar facturas, asientos, cobros, pagos, diario y mayores. |
+| `facturascripts-tax-iva-igic` | Validar operaciones con IVA, IGIC, retenciones, exenciones e inversión del sujeto pasivo. |
+| `facturascripts-reporting` | Generar informes de facturas expedidas, recibidas, cobros, pagos, diario y mayor. |
+
+La estructura actual mantiene el skill raíz para compatibilidad y usa `PROMPT_GENERADOR_SKILLS.md` como especificación de generación de la colección completa.
+
+## Instalación
+
+### Opción A: usar el repositorio como skill único
+
+Clona el repositorio:
+
+```bash
+git clone https://github.com/erseco/facturascripts-skill.git
+cd facturascripts-skill
 ```
+
+Usa la carpeta completa como skill, ya que contiene `SKILL.md` en la raíz y las referencias en `references/`.
+
+### Opción B: instalarlo en Claude Code
+
+En Claude Code, copia o enlaza la carpeta del skill dentro del directorio de skills que uses para tu proyecto o entorno. La carpeta debe contener:
+
+```text
 facturascripts-skill/
-  SKILL.md                          Punto de entrada del skill (181 lineas)
-  README.md                         Este archivo
-  .gitignore                        Exclusiones de Git
+  SKILL.md
+  README.md
   references/
-    architecture.md                 Arquitectura del nucleo (2,374 lineas)
-    models.md                       Todos los modelos de dominio (1,135 lineas)
-    controllers.md                  Controladores y sistema extendido (1,721 lineas)
-    controllers-advanced.md         Patrones avanzados de controladores (713 lineas)
-    views-widgets.md                Vistas XML, widgets y plantillas Twig (2,787 lineas)
-    api.md                          API REST completa y guia MCP Server (2,811 lineas)
-    database.md                     Base de datos, esquemas y migraciones (2,649 lineas)
-    plugins.md                      Desarrollo de plugins paso a paso (2,089 lineas)
-    libraries.md                    Exportacion, PDF, email, contabilidad (944 lineas)
-    security.md                     Seguridad, usuarios, roles, permisos (1,840 lineas)
-    translations.md                 Traducciones e internacionalizacion (1,181 lineas)
-    quick-reference.md              Consulta rapida de clases y metodos (454 lineas)
-    dev-tooling.md                  Plantilla, Playground (WASM) y GitHub Actions de CI/preview/release
-  templates/
-    .github/workflows/ci.yml        CI: entorno Docker + matriz de PHP
-    .github/workflows/pr-preview.yml Enlace de preview en el Playground por cada PR
-    .github/workflows/release.yml   ZIP + GitHub Release + publicacion en la forja
-    blueprint.json                  Configuracion del Playground para probar el plugin
-    scripts/rename-plugin.sh        Renombra PluginTemplate al nombre real
+  skills/
+  PROMPT_GENERADOR_SKILLS.md
 ```
 
----
+Después abre Claude Code en un proyecto relacionado con FacturaScripts y pide una tarea que active el skill, por ejemplo:
 
-## Que documenta cada referencia
+```text
+Usa el skill de FacturaScripts para crear un plugin que añada un informe de facturas recibidas por proveedor.
+```
 
-### architecture.md - Arquitectura del nucleo
+Cuando la colección multi-skill esté generada, instala cada carpeta de `skills/<nombre-del-skill>/` como skill independiente. Cada skill debe tener su propio `SKILL.md`.
 
-Documentacion exhaustiva de los 26 componentes principales del core de FacturaScripts:
+### Opción C: instalarlo en Claude.ai
 
-- **Punto de entrada** (index.php): flujo completo de ejecucion paso a paso.
-- **Kernel**: sistema de rutas, matching de URLs, timers, bloqueos, ciclo de vida completo.
-- **Request**: encapsulacion de datos HTTP (GET, POST, headers, cookies, files), deteccion de navegador y SO.
-- **Response**: respuestas HTTP con interfaz fluent (json, pdf, file, download, view, redirect), gestion de cookies.
-- **Session**: manejo de sesion, usuario autenticado, permisos, deteccion de IP.
-- **Plugins**: instalacion, activacion, desactivacion, eliminacion, deploy, gestion de dependencias.
-- **Cache**: cache basada en archivos con TTL, patron remember para lazy-loading.
-- **Logger**: logging multicanal con niveles (debug, info, notice, warning, error, critical), persistencia a BD.
-- **Tools**: mas de 40 funciones utilitarias (fechas, numeros, bytes, carpetas, slugs, ASCII, config).
-- **Html (Twig)**: motor de plantillas con funciones personalizadas (asset, cache, config, trans, money, number, date, bytes).
-- **Http**: cliente cURL con soporte GET, POST, PUT, PATCH, DELETE, headers y bearer token.
-- **Translator**: sistema de traducciones multiidioma con parametros y deploy.
-- **Validator**: validadores para email, URL, fecha, alfanumerico, string.
-- **DbQuery**: query builder fluent con llamadas magicas (whereNombre, whereCodcliente).
-- **Where**: constructor de clausulas WHERE con todos los operadores.
-- **WorkQueue**: cola de trabajos asincronos con wildcards.
-- **NextCode**: generacion de codigos secuenciales con bloqueo.
-- **Migrations**: sistema de migraciones del core y plugins.
-- **DbUpdater**: actualizacion de estructura de BD desde XML.
-- **Base/Controller**: clase base de controladores con seguridad y respuestas.
-- **Base/DataBase**: abstraccion MySQL/PostgreSQL con transacciones.
-- **Contratos e interfaces**: todas las interfaces del sistema.
-- **Error handlers**: DefaultError, PageNotFound, AccessDenied y otros.
-- **DataSrc**: data sources precacheados (Agentes, Almacenes, Divisas, Empresas, Series).
-- **Internal**: Plugin, Headers, SubRequest, PluginsDeploy.
-- **CrashReport, DebugBar, Telemetry, UploadedFile**.
+Crea un ZIP con la carpeta del skill:
 
-### models.md - Modelos de dominio
+```bash
+zip -r facturascripts-skill.zip SKILL.md README.md references skills PROMPT_GENERADOR_SKILLS.md
+```
 
-Documentacion de los 87+ modelos organizados por area funcional:
+Después súbelo desde la configuración de Skills de Claude.ai. Si generas la colección multi-skill, crea un ZIP por cada carpeta de `skills/` o empaqueta solo el skill que quieras usar.
 
-- **Clases base**: ModelCore, ModelClass (CRUD completo, busqueda, paginacion), JoinModel.
-- **15 traits**: CompanyRelationTrait, CurrencyRelationTrait, EmailAndPhonesTrait, ExerciseRelationTrait, FiscalNumberTrait, GravatarTrait, IbanTrait, IntracomunitariaTrait, InvoiceLineTrait, InvoiceTrait, PaymentRelationTrait, ProductRelationTrait, SerieRelationTrait, TaxRelationTrait, AccEntryRelationTrait.
-- **Maestros basicos**: Pais, Divisa, Almacen, Empresa, AgenciaTransporte.
-- **Clientes y proveedores**: Cliente, Proveedor, Contacto, GrupoClientes.
-- **Productos**: Producto, Variante, Stock, Familia, Fabricante, Atributo, AtributoValor, Tarifa, ProductoImagen, ProductoProveedor.
-- **Documentos de venta**: PresupuestoCliente, PedidoCliente, AlbaranCliente, FacturaCliente y todas sus lineas.
-- **Documentos de compra**: PresupuestoProveedor, PedidoProveedor, AlbaranProveedor, FacturaProveedor y todas sus lineas.
-- **Pagos**: ReciboCliente, PagoCliente, ReciboProveedor, PagoProveedor.
-- **Contabilidad**: Ejercicio, Cuenta, Subcuenta, CuentaEspecial, Asiento, Partida, Diario.
-- **Impuestos**: Impuesto, ImpuestoZona, Retencion.
-- **Configuracion**: Serie, FormaPago, Settings, CronJob.
-- **Usuarios y permisos**: User, Role, RoleAccess, RoleUser.
-- **API**: ApiKey, ApiAccess.
-- **Paginas**: Page, PageOption, PageFilter.
-- **Archivos**: AttachedFile, AttachedFileRelation.
-- **Notificaciones**: LogMessage, WorkEvent, EmailNotification, EmailSent.
-- **Transformacion**: DocTransformation.
-- **Cuentas banco**: CuentaBanco, CuentaBancoCliente, CuentaBancoProveedor.
-- **Modelos Join**: vistas virtuales con campos calculados.
-- **Diagrama de relaciones** entre modelos.
+### Opción D: usarlo como especificación para generar nuevos skills
 
-Cada modelo incluye: tabla y clave primaria, todas las propiedades con tipos PHP, todos los metodos con firmas completas, relaciones con otros modelos y logica de negocio.
+Usa `PROMPT_GENERADOR_SKILLS.md` como prompt principal en una IA con capacidad multiagente o en un entorno de generación asistida. El objetivo de ese prompt es producir la colección final de skills, referencias, tests/evals, README y empaquetado.
 
-### controllers.md - Controladores
+## Preparar FacturaScripts para uso con API
 
-Documentacion de los 125+ controladores del core y el sistema extendido:
+1. Entra en FacturaScripts como administrador.
+2. Activa la API desde el panel de administración si no está activa.
+3. Crea una API Key con los permisos mínimos necesarios.
+4. Usa la cabecera HTTP `Token` para autenticar llamadas a `/api/3`.
+5. Para descubrir endpoints, instala o activa el plugin `DocumentacionAPI` si necesitas Swagger/OpenAPI.
+6. No uses una clave con permisos de escritura para informes de solo lectura.
+7. No pegues claves API en prompts, commits, issues o PRs.
 
-- **BaseController**: propiedades, metodos de respuesta, seguridad, permisos.
-- **ListController**: listados con filtros, ordenacion, paginacion, createViews, loadData.
-- **EditController**: formularios de edicion, execPreviousAction, execAfterAction.
-- **PanelController**: formularios con pestanas (tabs), addView.
-- **ReportController**: informes con filtros.
-- **Sistema de vistas**: BaseView, ListView, EditView, EditListView, HtmlView.
-- **9 tipos de filtros**: AutocompleteFilter, CheckFilter, DateFilter, NumberFilter, PeriodFilter, SelectFilter, SelectWhereFilter y mas.
-- **AjaxForms**: formularios AJAX para documentos comerciales (ventas y compras).
-- **Todos los controladores del core** organizados por funcionalidad: dashboard, clientes, proveedores, productos, ventas, compras, contabilidad, informes, administracion.
-- **Ejemplos completos** de como crear controladores List y Edit.
+Ejemplo de comprobación básica:
 
-### controllers-advanced.md - Patrones avanzados
+```bash
+export FACTURASCRIPTS_URL="https://facturascripts.example.com"
+export FACTURASCRIPTS_TOKEN="replace-with-your-token"
 
-- Patrones de diseno comunes en controladores.
-- Filtros avanzados y personalizados.
-- Validacion y permisos.
-- Traits y mixins disponibles.
-- Casos de uso reales.
-- Mejores practicas de seguridad y rendimiento.
+curl -sS \
+  -H "Token: ${FACTURASCRIPTS_TOKEN}" \
+  "${FACTURASCRIPTS_URL}/api/3"
+```
 
-### views-widgets.md - Vistas y widgets
+## Cómo usarlo
 
-- **Sistema de vistas XML**: estructura completa de archivos XMLView (columns, rows, modals, groups).
-- **26 tipos de widgets** documentados con propiedades, comportamiento y ejemplos: WidgetText, WidgetTextarea, WidgetNumber, WidgetMoney, WidgetPercentage, WidgetDate, WidgetDatetime, WidgetTime, WidgetCheckbox, WidgetSelect, WidgetAutocomplete, WidgetDatalist, WidgetRadio, WidgetPassword, WidgetFile, WidgetLibrary, WidgetLink, WidgetColor, WidgetJson, WidgetBytes, WidgetSeconds, WidgetStars, WidgetVariante, WidgetSubcuenta y otros.
-- **Plantillas Twig**: estructura Master, macros, variables, funciones personalizadas, como extender desde plugins.
-- **133 XMLViews del core** organizadas por area funcional.
-- **Guia paso a paso** para crear vistas personalizadas con modales y filas de estado.
+### Como desarrollador
 
-### api.md - API REST
+```text
+Usa el skill de FacturaScripts para crear un plugin llamado AccountingReports que añada un ReportController con filtro por ejercicio, proveedor y rango de fechas.
+```
 
-- **Arquitectura de la API**: flujo de peticiones, ApiController, autenticacion, codigos de error.
-- **Recursos automaticos**: CRUD automatico por modelo, endpoints GET/POST/PUT/DELETE.
-- **9 operadores de filtro**: =, gt, gte, lt, lte, neq, like, null, notnull.
-- **Gestion de API Keys**: modelo ApiKey, ApiAccess, permisos granulares por recurso y metodo HTTP.
-- **Recursos personalizados**: como crear endpoints API propios en un plugin.
-- **Ejemplos practicos**: listar clientes, crear facturas, actualizar stock, buscar productos.
-- **Uso desde codigo externo**: ejemplos en cURL, PHP, JavaScript/fetch y Python requests.
-- **Guia para crear un MCP Server**: implementacion completa en TypeScript con herramientas basadas en la API.
+```text
+Revisa este controlador de FacturaScripts y dime si respeta el patrón de ListController, permisos, traducciones y XMLView.
+```
 
-### database.md - Base de datos
+```text
+Diseña un MCP Server para consultar facturas expedidas, facturas recibidas, mayores y diario usando la API de FacturaScripts.
+```
 
-- **Abstraccion DataBase**: conexion, consultas, estructura, transacciones.
-- **Motores soportados**: MySQL y PostgreSQL con sus diferencias.
-- **DbQuery (Query Builder)**: todos los metodos fluent (select, where, join, groupBy, orderBy, limit, agregaciones).
-- **Where**: todos los operadores y combinaciones AND/OR.
-- **DbUpdater**: creacion y actualizacion de tablas desde XML.
-- **Migraciones**: sistema del core y plugins.
-- **Esquema completo de la base de datos**: todas las tablas con columnas, tipos, restricciones e indices.
-- **Formato XML de tablas**: como definir tablas nuevas.
-- **Ejemplos practicos** de consultas comunes.
+### Como usuario contable vía API
 
-### plugins.md - Desarrollo de plugins
+```text
+Consulta las facturas expedidas entre el 1 de enero y el 31 de marzo de 2026, agrupa por cliente y separa base, impuesto, retención, total, cobrado y pendiente.
+```
 
-Guia completa para crear plugins de principio a fin:
+```text
+Prepara un dry-run para contabilizar este asiento manual. No lo subas hasta que confirme. Debe cuadrar debe y haber y usar subcuentas existentes.
+```
 
-- **Estructura de directorios** y archivos requeridos.
-- **facturascripts.ini**: formato completo con todos los campos.
-- **Init.php**: metodos init(), update(), uninstall().
-- **Ciclo de vida**: instalacion, activacion, actualizacion, desactivacion, eliminacion.
-- **Sistema Mod (hooks)**: todas las interfaces de modificadores para extender el core.
-- **Crear modelos**: definir tabla XML y clase Model.
-- **Crear controladores**: List, Edit, Panel con getPageData completo.
-- **Crear vistas**: XMLView y plantillas Twig personalizadas.
-- **Workers**: cola de trabajos, registro y ejecucion.
-- **Migraciones**: automaticas por XML y manuales.
-- **Traducciones**: archivos JSON multiidioma.
-- **Assets**: inclusion de CSS y JavaScript.
-- **Ejemplo completo**: plugin funcional paso a paso con todos los componentes.
+```text
+Obtén el mayor de la subcuenta 4300001 para 2026 con saldo inicial, movimientos y saldo acumulado.
+```
 
-### libraries.md - Librerias
+```text
+Marca como pagada esta factura de proveedor con fecha de pago 2026-02-15 y forma de pago transferencia, pero primero valida que la factura exista, que el ejercicio esté abierto y que la forma de pago sea válida.
+```
 
-- **Exportacion**: ExportBase, CSVExport, XLSExport, PDFExport, MAILExport, AsientoExport.
-- **PDF**: PDFCore, PDFDocument con headers, footers, QR, tablas de impuestos.
-- **Email**: arquitectura de bloques (Text, Html, Table, Button, Title, Box, Space), NewMail, MailNotifier, SMTP.
-- **Importacion**: CSVImport con soporte MySQL y PostgreSQL.
-- **Contabilidad**: InvoiceToAccounting, AccountingCreation, AccountingClosing, Ledger.
-- **Sistema Mod**: CalculatorModInterface con implementacion espanola completa.
-- **Workers**: WorkerClass, TestWorker, PurchaseDocumentWorker, CuentaWorker, PartidaWorker.
+## Fuentes oficiales tributarias enlazadas
 
-### security.md - Seguridad
+Los skills no deben inventar tipos fiscales, plazos ni obligaciones formales. Para operaciones con IVA, IGIC, SII, libros registro o VERI*FACTU, consulta `references/fuentes-oficiales-tributarias.md`, que enlaza, entre otras fuentes:
 
-- **Modelo User**: propiedades, hash de password, verificacion, autenticacion en dos factores (TOTP).
-- **Sistema de Roles**: Role, RoleAccess, RoleUser.
-- **Permisos por pagina**: allowdelete, allowupdate, allowinsert, allowdetail, allowexport, allowimport, onlyownerdata.
-- **Sesion y autenticacion**: login, logout, cookies, proteccion contra fuerza bruta.
-- **Proteccion CSRF**: MultiRequestProtection, generacion y validacion de tokens.
-- **Seguridad API**: API Keys, acceso por recurso, metodo HTTP.
-- **Validacion de datos**: todos los validadores con sus reglas.
-- **Implementar seguridad en plugins**: ejemplos de verificacion de permisos, prevencion XSS y SQL injection.
+- Portal de IVA de la AEAT: https://sede.agenciatributaria.gob.es/Sede/iva.html
+- Facturación y Registro de la AEAT: https://sede.agenciatributaria.gob.es/Sede/iva/facturacion-registro.html
+- SII de IVA de la AEAT: https://sede.agenciatributaria.gob.es/Sede/iva/suministro-inmediato-informacion.html
+- Manual práctico IVA 2025 de la AEAT: https://sede.agenciatributaria.gob.es/Sede/ayuda/25manual/IVA.html
+- VERI*FACTU y SIF de la AEAT: https://sede.agenciatributaria.gob.es/Sede/iva/sistemas-informaticos-facturacion-verifactu.html
+- Agencia Tributaria Canaria: https://www3.gobiernodecanarias.org/tributos/atc/
+- Sede electrónica de la Agencia Tributaria Canaria: https://sede.gobiernodecanarias.org/tributos/
+- SII del IGIC: https://www3.gobiernodecanarias.org/tributos/atc/web/agencia-tributaria-canaria/w/suministro-inmediato-de-informacion-del-igic-sii-1?ida=170056&prnt=948
+- Ley 37/1992 del IVA: https://www.boe.es/buscar/act.php?id=BOE-A-1992-28740
+- Ley 20/1991 del REF de Canarias e IGIC: https://www.boe.es/buscar/act.php?id=BOE-A-1991-14463
+- Reglamento de facturación: https://www.boe.es/buscar/act.php?id=BOE-A-2012-14696
 
-### translations.md - Traducciones
+## Principios de seguridad contable
 
-- **Clase Translator**: metodos completos para traduccion.
-- **Formato de archivos**: estructura JSON, convenciones de claves.
-- **25 idiomas soportados**: espanol, ingles, aleman, frances, italiano, catalan, euskera, gallego, valenciano y variantes latinoamericanas.
-- **Uso en PHP y Twig**: Tools::trans(), filtro trans().
-- **Parametros**: sintaxis %nombre%.
-- **Traducciones en plugins**: estructura, carga automatica, sobrescritura.
-- **Datos por pais**: sistema CSV con provincias, ciudades, divisas.
+- Toda operación de escritura debe tener **dry-run** previo.
+- No se deben inventar subcuentas, clientes, proveedores, series, formas de pago, códigos de impuesto ni tipos fiscales.
+- En asientos manuales, el debe y el haber deben cuadrar antes de proponer una llamada API.
+- En IVA/IGIC, hay que distinguir territorio, naturaleza de la operación, exención, inversión del sujeto pasivo, retención y deducibilidad.
+- Las reglas fiscales cambian. El skill debe verificar fuentes oficiales cuando el resultado dependa de normativa vigente.
+- Los informes deben indicar periodo, filtros, fuente de datos y si los totales son base, cuota, retención, total, cobrado o pendiente.
 
-### quick-reference.md - Consulta rapida
+## Referencias incluidas
 
-Tabla de referencia compacta con las clases, metodos y patrones mas utilizados para consultas rapidas durante el desarrollo.
+| Archivo | Contenido |
+| --- | --- |
+| `SKILL.md` | Router raíz para activar la experiencia FacturaScripts. |
+| `PROMPT_GENERADOR_SKILLS.md` | Prompt maestro en español para generar la colección completa de skills. |
+| `references/accounting-api-workflows.md` | Flujos de API y contabilidad para usuario operativo. |
+| `references/fuentes-oficiales-tributarias.md` | Enlaces oficiales de AEAT, Agencia Tributaria Canaria, BOE y BOC. |
+| `references/api.md` | API REST, filtros, autenticación, recursos y MCP. |
+| `references/plugins.md` | Desarrollo de plugins. |
+| `references/models.md` | Modelos principales: facturas, asientos, partidas, subcuentas, impuestos, pagos y cobros. |
+| `references/controllers.md` | Controladores base, ListController, EditController, PanelController y ReportController. |
+| `references/views-widgets.md` | XMLView, widgets y Twig. |
+| `references/security.md` | Roles, permisos, API keys y seguridad. |
+| `references/dev-tooling.md` | Entorno, pruebas, previews y releases. |
 
-### dev-tooling.md - Entorno, pruebas y publicacion
+## Generar la colección multi-skill
 
-Referencia opcional con el ecosistema de herramientas para el ciclo de vida de un plugin (entorno Docker, pruebas en el navegador con WebAssembly y automatizacion de releases), con archivos listos para copiar en `templates/`.
+Ejecuta una IA generadora con este prompt:
 
----
+```text
+Lee PROMPT_GENERADOR_SKILLS.md y genera la colección completa de skills de FacturaScripts siguiendo sus criterios de aceptación.
+```
 
-## Como usar este skill
+La salida esperada debe incluir:
 
-### En Claude Code o Cowork
+```text
+skills/
+  facturascripts-developer/
+    SKILL.md
+    references/
+  facturascripts-api-user/
+    SKILL.md
+    references/
+  facturascripts-accounting-user/
+    SKILL.md
+    references/
+  facturascripts-tax-iva-igic/
+    SKILL.md
+    references/
+  facturascripts-reporting/
+    SKILL.md
+    references/
+evals/
+scripts/
+README.md
+```
 
-Coloca la carpeta `facturascripts-skill` en la ruta de skills de tu proyecto o sesion. Claude cargara el `SKILL.md` automaticamente cuando detecte que la tarea esta relacionada con FacturaScripts y consultara las referencias especificas segun lo que necesite.
+## Desarrollo y contribución
 
-### Como referencia de desarrollo
+Flujo recomendado:
 
-Puedes consultar los archivos de `references/` directamente como documentacion tecnica. Estan organizados por area funcional y cada uno tiene tabla de contenidos para facilitar la navegacion.
+```bash
+git checkout devel
+git pull
+git checkout -b feat/accounting-api-skill-collection
+# modificar SKILL.md, README.md, references/ y skills/
+git add .
+git commit -m "Add accounting and API skill collection plan"
+git push -u origin feat/accounting-api-skill-collection
+```
 
----
+Abre un PR contra `devel` con resumen de cambios, fuentes revisadas y checklist de validación.
 
-## Sobre FacturaScripts
+## Atribución
 
-FacturaScripts es un ERP open-source desarrollado en PHP que cubre:
-
-- Facturacion (presupuestos, pedidos, albaranes, facturas).
-- Contabilidad (plan contable, asientos, balances, cierres).
-- Gestion de stock (multialmacen, movimientos, inventario).
-- Compras y ventas (documentos completos con lineas, impuestos, descuentos).
-- CRM (clientes, proveedores, contactos, grupos).
-- Gestion de usuarios y permisos basada en roles.
-- API REST completa para integraciones externas.
-- Sistema de plugins extensible.
-
-Mas informacion en [facturascripts.com](https://facturascripts.com).
-
----
-
-## Version
-
-- **FacturaScripts Core**: 2025.81
-- **Skill version**: 1.0.0
-- **Fecha de creacion**: Abril 2026
-
----
-
-## Autor
-
-**Jose Conti**
-- Web: [plugins.joseconti.com](https://plugins.joseconti.com)
-- Email: j.conti@joseconti.com
-
----
+Este trabajo parte del skill original de **Jose Conti** para FacturaScripts y lo reorganiza como una colección especializada orientada a desarrollo, API y uso contable.
 
 ## Licencia
 
-Este skill es documentacion tecnica generada a partir del codigo fuente de FacturaScripts, que se distribuye bajo licencia LGPL v3. Consulta el archivo COPYING del proyecto original para mas detalles.
+Este repositorio documenta y organiza conocimiento técnico alrededor de FacturaScripts. Revisa la licencia del repositorio y la licencia LGPL v3 del proyecto FacturaScripts para el código fuente original del ERP.
